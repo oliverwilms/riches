@@ -21,7 +21,7 @@ Property Website As %String;
 
 Property Nickname As %String;
 
-ClassMethod OutputTableData(pWhere As %String = "", pTrClick As %String = "alert('transfer=#');", pMaxRows = -1) As %Status
+ClassMethod OutputTableData(pWhere As %String = "", pTrClick As %String = "window.location='Transact.csp?iAccount=#';", pMaxRows = -1) As %Status
 {
 	//Do ##class(SFTPLog).DebugTEST("User.Transfer - OutputTableData")
 	//Do ##class(SFTPLog).DebugTEST("pWhere = "_pWhere)
