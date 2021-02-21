@@ -1,0 +1,37 @@
+<html>
+<head>
+<script language="Cache" runat="Server">
+Set tHeader = "Riches - Transact"
+If ($Data(%request.Data("iAccount",1))) {
+	Set iAccount = %request.Data("iAccount",1)
+}
+
+</script>
+<title>#(tHeader)#</title>
+</head>
+
+<body>
+<h1>#(tHeader)#</h1>
+
+<script language="Cache" runat="Server">
+Write "<table>",!
+Do ##class(Riches.Account).OutputTableData()
+Write "</table>",!
+Write "<textarea id='debug' name='debug' rows='5' cols='50'>",!
+Set tDebug = ""
+Set tRow = ""
+For {
+	If ($Data(^TESTunit) = 0) { Quit }
+	Set tDebug = $Order(^TESTunit(tDebug))
+	If (tDebug = "") { Quit }
+	Write $Get(^TESTunit(tDebug)),!
+	If ($Increment(tRow) > 4) { Quit }
+}
+Write "</textarea>","<br>",!
+Write "<a href='/csp/sys/exp/UtilExpGlobalView.csp?$ID2=TESTunit&$NAMESPACE=",$Namespace,"'>View Debug Global"
+</script>
+
+<form>
+</form>
+</body>
+</html>
