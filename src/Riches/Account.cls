@@ -21,6 +21,44 @@ Property Website As %String;
 
 Property Nickname As %String;
 
+ClassMethod OutputFormData(iNickname As %String = "", iStartBalance As %String = "") As %Status
+{
+	Set q = """"
+	Set qRadio = q_"radio"_q
+	Set qSize = q_"50"_q
+	Set qSubmit = q_"submit"_q
+	Set qText = q_"text"_q
+	Write "<table><tr><td>",!
+	Set qName = q_"iType"_q
+	Set qID = q_"TypeChecking"_q
+	Write "<input type=",qRadio," id=",qID," name=",qName," value=",qID,">",!
+	Write "<label for=",qID,">Checking</label><br>",!
+	Write "</td><td>",!
+	Set qID = q_"TypeSavings"_q
+	Write "<input type=",qRadio," id=",qID," name=",qName," value=",qID,">",!
+	Write "<label for=",qID,">Savings</label><br>",!
+	Write "</td><td>",!
+	Set qID = q_"TypeCreditCard"_q
+	Write "<input type=",qRadio," id=",qID," name=",qName," value=",qID,">",!
+	Write "<label for=",qID,">Savings</label><br>",!
+	Write "</td></tr></table>",!
+	Write "<table><tr><td>"
+	Set qID=q_"iNickname"_q
+	Write "<label for=",qID,">Nickname:</label>",!
+	Write "</td><td>",!
+	Write "<input type=",qText," id=",qID," name=",qID," size=",qSize," value=",q,$Get(iNickname),q,"><br>",!
+	Write "</td></tr>",!
+	Write "<tr><td>",!
+	Set qID=q_"iStartBalance"_q
+	Write "<label for=",qID,">Start Balance:</label>",!
+	Write "</td><td>",!
+	Write "<input type=",qText," id=",qID," name=",qID," size=",qSize," value=",q,$Get(iStartBalance),q,"><br>",!
+	Write "</td></tr></table>",!
+	Set qValue = q_"Submit"_q
+	Write "<input type=",qSubmit," value=",qValue,">",!
+	Quit $$$OK
+}
+
 ClassMethod OutputTableData(pWhere As %String = "", pTrClick As %String = "window.location='Transact.csp?iAccount=#';", pMaxRows = -1) As %Status
 {
 	Do ##class(Util).DebugTEST("Riches.Account - OutputTableData")
