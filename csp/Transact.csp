@@ -4,8 +4,8 @@
 Set tHeader = "Riches - Transact"
 If ($Data(%request.Data("iAccount",1))) {
 	Set iAccount = %request.Data("iAccount",1)
+	Set objAccount = ##class(Riches.Account).%OpenId(iAccount)
 }
-
 </script>
 <title>#(tHeader)#</title>
 </head>
@@ -28,10 +28,59 @@ For {
 	If ($Increment(tRow) > 4) { Quit }
 }
 Write "</textarea>","<br>",!
-Write "<a href='/csp/sys/exp/UtilExpGlobalView.csp?$ID2=TESTunit&$NAMESPACE=",$Namespace,"'>View Debug Global"
+Write "<a href='/csp/sys/exp/UtilExpGlobalView.csp?$ID2=TESTunit&$NAMESPACE=",$Namespace,"'>View Debug Global</a>"
+Write "Hidden",!
+Write "<table border=1><tr><td>",!
+If $IsObject(objAccount) { Write objAccount.Nickname }
+Write "</td></tr></table>",!
 </script>
 
 <form>
+Form
+<table border=1><tr><td>
+<label for="iAccount">Account:</label>
+</td><td>
+<input type="text" id="iAccount" name="iAccount" size="50" value="#($Get(iAccount))#"><br>
+</td></tr>
+
+<tr><td>
+<label for="iTranDate">Date:</label>
+</td><td>
+<input type="text" id="iTranDate" name="iTranDate" size="50" value="#($Get(iTranDate))#"><br>
+</td></tr>
+
+<tr><td>
+<label for="iTranDate">Time:</label>
+</td><td>
+<input type="text" id="iTranTime" name="iTranTime" size="50" value="#($Get(iTranTime))#"><br>
+</td></tr>
+
+<tr><td>
+<label for="iMerchant">Merchant:</label>
+</td><td>
+<input type="text" id="iMerchant" name="iMerchant" size="50" value="#($Get(iMerchant))#"><br>
+</td></tr>
+
+<tr><td>
+<label for="iAmount">Amount:</label>
+</td><td>
+<input type="text" id="iAmount" name="iAmount" size="50" value="#($Get(iAmount))#"><br>
+</td></tr>
+
+<tr><td>
+<label for="iCategory">Category:</label>
+</td><td>
+<input type="text" id="iCategory" name="iCategory" size="50" value="#($Get(iCategory))#"><br>
+</td></tr>
+
+<tr><td>
+<label for="iSubCategory">Sub Category:</label>
+</td><td>
+<input type="text" id="iSubCategory" name="iSubCategory" size="50" value="#($Get(iSubCategory))#"><br>
+</td></tr></table>
+
+<input type="submit" value="Submit">
+
 </form>
 </body>
 </html>
