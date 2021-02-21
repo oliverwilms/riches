@@ -1,7 +1,7 @@
 Class Riches.Category Extends %Persistent
 {
 
-Property Type As %String;
+Property Type As %String(VALUELIST = ",I,E");
 
 Property Nickname As %String;
 
@@ -82,6 +82,12 @@ ClassMethod SubmitFormData(ByRef pRequestData) As %Status
 	}
 	If ($Data(pRequestData("iSortOrder",1))) {
 		Set iSortOrder = pRequestData("iSortOrder",1)
+	}
+	If ($Data(pRequestData("iType",1))) {
+		Set iType = pRequestData("iType",1)
+		Set iType = $ZCONVERT(iType,"U")
+		If (iType [ "EXP") Set iType = "E"
+		If (iType [ "INCOME") Set iType = "I"
 	}
 	If ($Get(iNickname) '= "") {
 		Set objCategory = ##class(Riches.Category).%New()
