@@ -9,6 +9,8 @@ Property Category As Category;
 
 Property SubCategory As SubCategory;
 
+Property Merchant As Merchant;
+
 Property TranDate As %Date;
 
 Property TranTime As %Time;
@@ -41,6 +43,9 @@ Storage Default
 </Value>
 <Value name="8">
 <Value>OtherSide</Value>
+</Value>
+<Value name="9">
+<Value>Merchant</Value>
 </Value>
 </Data>
 <DataLocation>^Riches.TransactD</DataLocation>
