@@ -15,7 +15,7 @@ If ($Data(%request.Data("iAccount",1))) {
 
 <script language="Cache" runat="Server">
 Write "<table>",!
-Do ##class(Riches.Account).OutputTableData()
+//Do ##class(Riches.Account).OutputTableData()
 Write "</table>",!
 Write "<textarea id='debug' name='debug' rows='5' cols='50'>",!
 Set tDebug = ""
@@ -31,7 +31,7 @@ Write "</textarea>","<br>",!
 Write "<a href='/csp/sys/exp/UtilExpGlobalView.csp?$ID2=TESTunit&$NAMESPACE=",$Namespace,"'>View Debug Global</a>"
 Write "Hidden",!
 Write "<table border=1><tr><td>",!
-If $IsObject(objAccount) { Write objAccount.Nickname }
+If $Data(objAccount),$IsObject(objAccount) { Write objAccount.Nickname }
 Write "</td></tr></table>",!
 </script>
 
@@ -74,7 +74,7 @@ Form
 </td><td>
 <input type="text" id="iCategory" name="iCategory" size="50" value="#($Get(iCategory))#"><br>
 </td><td>
-<p><a href="Chooser.csp?Choose=Category" target="iframe_chooser">Choose</a></p>
+<p><a href="Chooser.csp?iChoose=Category" target="iframe_chooser">Choose</a></p>
 </td></tr>
 
 <tr><td>
@@ -86,25 +86,11 @@ Form
 <input type="submit" value="Submit">
 </form>
 
-
-<script language="Cache" runat="Server">
-Write "Chooser",!
-Write "<table>",!
-Do ##class(Riches.Account).OutputTableData()
-Write "</table>",!
-Write "<textarea id='debug' name='debug' rows='5' cols='50'>",!
-Set tDebug = ""
-Set tRow = ""
-For {
-	If ($Data(^TESTunit) = 0) { Quit }
-	Set tDebug = $Order(^TESTunit(tDebug))
-	If (tDebug = "") { Quit }
-	Write $Get(^TESTunit(tDebug)),!
-	If ($Increment(tRow) > 4) { Quit }
-}
-Write "</textarea>","<br>",!
-Write "<a href='/csp/sys/exp/UtilExpGlobalView.csp?$ID2=TESTunit&$NAMESPACE=",$Namespace,"'>View Debug Global"
-</script>
-<iframe id="iframe_chooser" name="iframe_chooser" src="chooser.csp" title="Chooser" width="100" height="200" style="border:1px solid black;"></iframe>
+<table>
+<th>Chooser</th>
+<tr><td>
+<iframe id="iframe_chooser" name="iframe_chooser" src="" title="Chooser" width="600" height="400" style="border:1px solid black;"></iframe>
+</td></tr>
+</table>
 </body>
 </html>
