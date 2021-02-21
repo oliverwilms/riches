@@ -23,15 +23,15 @@ Property Nickname As %String;
 
 ClassMethod OutputTableData(pWhere As %String = "", pTrClick As %String = "window.location='Transact.csp?iAccount=#';", pMaxRows = -1) As %Status
 {
-	//Do ##class(SFTPLog).DebugTEST("User.Transfer - OutputTableData")
-	//Do ##class(SFTPLog).DebugTEST("pWhere = "_pWhere)
+	Do ##class(Util).DebugTEST("Riches.Account - OutputTableData")
+	Do ##class(Util).DebugTEST("pWhere = "_pWhere)
 	Set tQuote = """"
 	Set tSC = $$$OK
 	Set tWHERE = ""
 	If (pWhere '= "") Set tWHERE = " WHERE Session = '"_pWhere_"'"  // This did not return any result
 	If (pWhere '= "") Set tWHERE = " WHERE Session LIKE '"_$TRANSLATE(pWhere," ","%")_"'"
 	Set tQuery = "SELECT * FROM Riches.Account"_tWHERE
-	//Do ##class(SFTPLog).DebugTEST("tQuery = "_tQuery)
+	Do ##class(Util).DebugTEST("tQuery = "_tQuery)
 	Set tStatement = ##class(%SQL.Statement).%New()
 	Set tSC = tStatement.%Prepare(.tQuery)  // Create a cached query
 	If $$$ISERR(tSC) { Quit tSC }
