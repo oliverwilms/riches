@@ -40,7 +40,9 @@ Form
 <table border=1><tr><td>
 <label for="iAccount">Account:</label>
 </td><td>
-<input type="text" id="iAccount" name="iAccount" size="50" value="#($Get(iAccount))#"><br>
+<input type="text" id="iAccount" name="iAccount" size="50" value="#($Get(iAccount))#">
+</td><td>
+<p><a href="Account.csp" target="iframe_chooser">Choose</a></p>
 </td></tr>
 
 <tr><td>
@@ -71,6 +73,8 @@ Form
 <label for="iCategory">Category:</label>
 </td><td>
 <input type="text" id="iCategory" name="iCategory" size="50" value="#($Get(iCategory))#"><br>
+</td><td>
+<p><a href="Chooser.csp?Choose=Category" target="iframe_chooser">Choose</a></p>
 </td></tr>
 
 <tr><td>
@@ -80,7 +84,27 @@ Form
 </td></tr></table>
 
 <input type="submit" value="Submit">
-
 </form>
+
+
+<script language="Cache" runat="Server">
+Write "Chooser",!
+Write "<table>",!
+Do ##class(Riches.Account).OutputTableData()
+Write "</table>",!
+Write "<textarea id='debug' name='debug' rows='5' cols='50'>",!
+Set tDebug = ""
+Set tRow = ""
+For {
+	If ($Data(^TESTunit) = 0) { Quit }
+	Set tDebug = $Order(^TESTunit(tDebug))
+	If (tDebug = "") { Quit }
+	Write $Get(^TESTunit(tDebug)),!
+	If ($Increment(tRow) > 4) { Quit }
+}
+Write "</textarea>","<br>",!
+Write "<a href='/csp/sys/exp/UtilExpGlobalView.csp?$ID2=TESTunit&$NAMESPACE=",$Namespace,"'>View Debug Global"
+</script>
+<iframe id="iframe_chooser" name="iframe_chooser" src="chooser.csp" title="Chooser" width="100" height="200" style="border:1px solid black;"></iframe>
 </body>
 </html>
