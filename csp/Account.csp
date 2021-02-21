@@ -1,0 +1,80 @@
+<html>
+<head>
+<script language="Cache" runat="Server">
+Set tHeader = "Riches - Account"
+If ($Data(%request.Data("iType",1))) {
+	Set iType = %request.Data("iType",1)
+}
+If ($Data(%request.Data("iNickname",1))) {
+	Set iNickname = %request.Data("iNickname",1)
+}
+If ($Data(%request.Data("iStartBalance",1))) {
+	Set iStartBalance = %request.Data("iStartBalance",1)
+	If (iStartBalance = "") Set iStartBalance = 0
+}
+If ($Get(iNickname) '= "") {
+	Set objAccount = ##class(Riches.Account).%New()
+	Set objAccount.Nickname = iNickname
+	Set objAccount.StartBalance = $Get(iStartBalance)
+	Set objAccount.Type = $Get(iType)
+	Set tSC = objAccount.%Save()
+	Set ^TESTunit(0-$Increment(^TESTunit)) = $SYSTEM.Status.GetOneErrorText(tSC)
+	If (tSC = 1) {
+		Set iNickname = ""
+		Set iStartBalance = ""
+	}
+}
+</script>
+<title>#(tHeader)#</title>
+</head>
+
+<body>
+<h1>#(tHeader)#</h1>
+<form>
+
+<table><tr><td>
+<input type="radio" id="TypeChecking" name="iType" value="TypeChecking">
+<label for="TypeChecking">Checking</label><br>
+</td><td>
+<input type="radio" id="TypeSavings" name="iType" value="TypeSavings">
+<label for="TypeSavings">Savings</label><br>
+</td><td>
+<input type="radio" id="TypeCreditCard" name="iType" value="TypeCreditCard">
+<label for="TypeCreditCard">Credit Card</label><br>
+</td></tr></table>
+
+<table><tr><td>
+<label for="iNickname">Nickname:</label>
+</td><td>
+<input type="text" id="iNickname" name="iNickname" size="50" value="#($Get(iNickname))#"><br>
+</td></tr>
+
+<tr><td>
+<label for="iStartBalance">Start Balance:</label>
+</td><td>
+<input type="text" id="iStartBalance" name="iStartBalance" size="50" value="#($Get(iStartBalance))#"><br>
+</td></tr></table>
+
+<input type="submit" value="Submit">
+</form>
+
+<script language="Cache" runat="Server">
+Write "<table>",!
+Do ##class(Riches.Account).OutputTableData()
+Write "</table>",!
+Write "<textarea id='debug' name='debug' rows='5' cols='50'>",!
+Set tDebug = ""
+Set tRow = ""
+For {
+	If ($Data(^TESTunit) = 0) { Quit }
+	Set tDebug = $Order(^TESTunit(tDebug))
+	If (tDebug = "") { Quit }
+	Write $Get(^TESTunit(tDebug)),!
+	If ($Increment(tRow) > 4) { Quit }
+}
+Write "</textarea>","<br>",!
+Write "<a href='/csp/sys/exp/UtilExpGlobalView.csp?$ID2=TESTunit&$NAMESPACE=",$Namespace,"'>View Debug Global"
+</script>
+
+</body>
+</html>
