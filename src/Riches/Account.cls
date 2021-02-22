@@ -109,7 +109,7 @@ ClassMethod OutputTableData(pWhere As %String = "", pTrClick As %String = "windo
 	Quit tSC
 }
 
-ClassMethod SubmitFormData(ByRef pRequestData, Output pAction) As %Status
+ClassMethod SubmitFormData(ByRef pRequestData, Output pAction, Output pId) As %Status
 {
 	Do ##class(Util).DebugTEST("Riches.Account - SubmitFormData")
 	Do ##class(Util).DebugMerge("pRequestData = ",.pRequestData)
@@ -124,13 +124,16 @@ ClassMethod SubmitFormData(ByRef pRequestData, Output pAction) As %Status
 		Set iType = pRequestData("iType",1)
 	}
 	If ($Get(iNickname) '= "") {
-		Set objCategory = ##class(Riches.Account).%New()
-		Set objCategory.Nickname = iNickname
-		Set objCategory.StartBalance = $Get(iStartBalance)
-		Set objCategory.Type = ..IdentifyAccountType($Get(iType))
-		Set tSC = objCategory.%Save()
+		Set objAccount = ##class(Riches.Account).%New()
+		Set objAccount.Nickname = iNickname
+		Set objAccount.StartBalance = $Get(iStartBalance)
+		Set objAccount.Type = ..IdentifyAccountType($Get(iType))
+		Set tSC = objAccount.%Save()
 		Do ##class(Util).DebugStatus(tSC)
-		If $$$ISOK(tSC) Set pAction = "ADD"
+		If $$$ISOK(tSC) {
+			Set pAction = "ADD"
+			Set pId = objAccount.%Id()
+		}
 	}
 	Quit tSC
 }
