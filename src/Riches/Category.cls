@@ -98,7 +98,7 @@ ClassMethod SubmitFormData(ByRef pRequestData, Output pAction, Output pId) As %S
 		Do ##class(Util).DebugStatus(tSC)
 		If $$$ISOK(tSC) {
 			Set pAction = "ADD"
-			Set pId = objAccount.%Id()
+			Set pId = objCategory.%Id()
 		}
 	}
 	Quit tSC
