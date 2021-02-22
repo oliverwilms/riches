@@ -16,15 +16,18 @@ If (tChoose = "CATEGORY") {
 	Merge pRequestData = %request.Data
 	Set tSC = ##class(Riches.Category).SubmitFormData(.pRequestData,.pAction,.pId)
 }
+If (tChoose = "MERCHANT") {
+	Merge pRequestData = %request.Data
+	Set tClassname = "Riches.Merchant"
+	//Set tSC = ##class(Riches.Category).SubmitFormData(.pRequestData,.pAction,.pId)
+	If ($Get(tClassname) '= "") Set tSC = $CLASSMETHOD(tClassname,"SubmitFormData",.pRequestData,.pAction,.pId)
+}
 Set tAction = $ZCONVERT($Get(pAction),"U")
 Do ##class(Riches.Util).DebugTEST("<head> tAction = "_tAction)
 If (tAction = "ADD") {
-	If (tChoose = "ACCOUNT") {
-		Set tElementId = "iAccount"
-	}
-	If (tChoose = "CATEGORY") {
-		Set tElementId = "iCategory"
-	}
+	If (tChoose = "ACCOUNT") { Set tElementId = "iAccount" }
+	If (tChoose = "CATEGORY") { Set tElementId = "iCategory" }
+	If (tChoose = "MERCHANT") { Set tElementId = "iMerchant" }
 }
 </script>
 <script language="JavaScript">
