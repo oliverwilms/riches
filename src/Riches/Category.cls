@@ -72,7 +72,7 @@ ClassMethod OutputTableData(pWhere As %String = "", pTrClick As %String = "windo
 	Quit tSC
 }
 
-ClassMethod SubmitFormData(ByRef pRequestData, Output pAction) As %Status
+ClassMethod SubmitFormData(ByRef pRequestData, Output pAction, Output pId) As %Status
 {
 	Do ##class(Util).DebugTEST("Riches.Category - SubmitFormData")
 	Do ##class(Util).DebugMerge("pRequestData = ",.pRequestData)
@@ -96,7 +96,10 @@ ClassMethod SubmitFormData(ByRef pRequestData, Output pAction) As %Status
 		Set objCategory.Type = $Get(iType)
 		Set tSC = objCategory.%Save()
 		Do ##class(Util).DebugStatus(tSC)
-		If $$$ISOK(tSC) Set pAction = "ADD"
+		If $$$ISOK(tSC) {
+			Set pAction = "ADD"
+			Set pId = objAccount.%Id()
+		}
 	}
 	Quit tSC
 }
