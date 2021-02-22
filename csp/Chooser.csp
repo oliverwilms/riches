@@ -10,20 +10,37 @@ Set tChoose = $ZCONVERT($Get(iChoose),"U")
 Do ##class(Riches.Util).DebugTEST("<head> tChoose = "_tChoose)
 If (tChoose = "ACCOUNT") {
 	Merge pRequestData = %request.Data
-	Set tSC = ##class(Riches.Account).SubmitFormData(.pRequestData,.pAction)
+	Set tSC = ##class(Riches.Account).SubmitFormData(.pRequestData,.pAction,.pId)
 }
 If (tChoose = "CATEGORY") {
 	Merge pRequestData = %request.Data
-	Set tSC = ##class(Riches.Category).SubmitFormData(.pRequestData,.pAction)
+	Set tSC = ##class(Riches.Category).SubmitFormData(.pRequestData,.pAction,.pId)
 }
 Set tAction = $ZCONVERT($Get(pAction),"U")
 Do ##class(Riches.Util).DebugTEST("<head> tAction = "_tAction)
 If (tAction = "ADD") {
+	If (tChoose = "ACCOUNT") {
+		Set tElementId = "iAccount"
+	}
+	If (tChoose = "CATEGORY") {
+		Set tElementId = "iCategory"
+	}
+}
+</script>
+<script language="JavaScript">
+function onloadHandler()
+{
+	var tAction = '#($Get(tAction,""))#';
+	var tElementId = '#($Get(tElementId,""))#';
+	var tId = '#($Get(pId,""))#';
+	if (tAction != '') {
+		parent.document.getElementById(tElementId).value = tId;
+	}
 }
 </script>
 <title>#(tHeader)#</title>
 </head>
-<body>
+<body onload="onloadHandler();">
 <h2>#(tHeader)#</h2>
 <form>
 <script language="Cache" runat="Server">
@@ -46,6 +63,7 @@ If (tChoose = "CATEGORY") {
 	Set tSC = ##class(Riches.Category).OutputTableData()
 }
 Write "</table>",!
+/*
 Write "<textarea id='debug' name='debug' rows='5' cols='50'>",!
 Set tDebug = ""
 Set tRow = ""
@@ -58,6 +76,7 @@ For {
 }
 Write "</textarea>","<br>",!
 Write "<a href='/csp/sys/exp/UtilExpGlobalView.csp?$ID2=TESTunit&$NAMESPACE=",$Namespace,"'>View Debug Global</a>"
+*/
 </script>
 
 </body>
