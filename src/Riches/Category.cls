@@ -72,7 +72,7 @@ ClassMethod OutputTableData(pWhere As %String = "", pTrClick As %String = "windo
 	Quit tSC
 }
 
-ClassMethod SubmitFormData(ByRef pRequestData) As %Status
+ClassMethod SubmitFormData(ByRef pRequestData, Output pAction) As %Status
 {
 	Do ##class(Util).DebugTEST("Riches.Category - SubmitFormData")
 	Do ##class(Util).DebugMerge("pRequestData = ",.pRequestData)
@@ -95,11 +95,8 @@ ClassMethod SubmitFormData(ByRef pRequestData) As %Status
 		Set objCategory.SortOrder = $Get(iSortOrder)
 		Set objCategory.Type = $Get(iType)
 		Set tSC = objCategory.%Save()
-		Set ^TESTunit(0-$Increment(^TESTunit)) = $SYSTEM.Status.GetOneErrorText(tSC)
-		If $$$ISOK(tSC) {
-			Set iNickname = ""
-			Set iSortOrder = ""
-		}
+		Do ##class(Util).DebugStatus(tSC)
+		If $$$ISOK(tSC) Set pAction = "ADD"
 	}
 	Quit tSC
 }
