@@ -21,6 +21,8 @@ Property Website As %String;
 
 Property Nickname As %String;
 
+Property Rewards As %String;
+
 ClassMethod IdentifyAccountType(pValue As %String = "") As %String
 {
 	Set tAccountType = "Other"
@@ -173,6 +175,9 @@ Storage Default
 </Value>
 <Value name="11">
 <Value>Nickname</Value>
+</Value>
+<Value name="12">
+<Value>Rewards</Value>
 </Value>
 </Data>
 <DataLocation>^Riches.AccountD</DataLocation>
