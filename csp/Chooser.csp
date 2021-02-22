@@ -1,0 +1,64 @@
+<html>
+<head>
+<script language="Cache" runat="Server">
+Set tHeader = "Riches - Chooser"
+If ($Data(%request.Data("iChoose",1))) {
+	Set iChoose = %request.Data("iChoose",1)
+	Set tHeader = "Riches - "_iChoose_" Chooser"
+}
+Set tChoose = $ZCONVERT($Get(iChoose),"U")
+Do ##class(Riches.Util).DebugTEST("<head> tChoose = "_tChoose)
+If (tChoose = "ACCOUNT") {
+	Merge pRequestData = %request.Data
+	Set tSC = ##class(Riches.Account).SubmitFormData(.pRequestData,.pAction)
+}
+If (tChoose = "CATEGORY") {
+	Merge pRequestData = %request.Data
+	Set tSC = ##class(Riches.Category).SubmitFormData(.pRequestData,.pAction)
+}
+Set tAction = $ZCONVERT($Get(pAction),"U")
+Do ##class(Riches.Util).DebugTEST("<head> tAction = "_tAction)
+If (tAction = "ADD") {
+}
+</script>
+<title>#(tHeader)#</title>
+</head>
+<body>
+<h2>#(tHeader)#</h2>
+<form>
+<script language="Cache" runat="Server">
+Do ##class(Riches.Util).DebugTEST("<form> tChoose = "_tChoose)
+If (tChoose = "ACCOUNT") {
+	Set tSC = ##class(Riches.Account).OutputFormData()
+}
+If (tChoose = "CATEGORY") {
+	Set tSC = ##class(Riches.Category).OutputFormData()
+}
+</script>
+</form>
+
+<script language="Cache" runat="Server">
+Write "<table>",!
+If (tChoose = "ACCOUNT") {
+	Do ##class(Riches.Account).OutputTableData()
+}
+If (tChoose = "CATEGORY") {
+	Set tSC = ##class(Riches.Category).OutputTableData()
+}
+Write "</table>",!
+Write "<textarea id='debug' name='debug' rows='5' cols='50'>",!
+Set tDebug = ""
+Set tRow = ""
+For {
+	If ($Data(^TESTunit) = 0) { Quit }
+	Set tDebug = $Order(^TESTunit(tDebug))
+	If (tDebug = "") { Quit }
+	Write $Get(^TESTunit(tDebug)),!
+	If ($Increment(tRow) > 4) { Quit }
+}
+Write "</textarea>","<br>",!
+Write "<a href='/csp/sys/exp/UtilExpGlobalView.csp?$ID2=TESTunit&$NAMESPACE=",$Namespace,"'>View Debug Global</a>"
+</script>
+
+</body>
+</html>
