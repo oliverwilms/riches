@@ -45,23 +45,19 @@ function onloadHandler()
 <form>
 <script language="Cache" runat="Server">
 Do ##class(Riches.Util).DebugTEST("<form> tChoose = "_tChoose)
-If (tChoose = "ACCOUNT") {
-	Set tSC = ##class(Riches.Account).OutputFormData()
-}
-If (tChoose = "CATEGORY") {
-	Set tSC = ##class(Riches.Category).OutputFormData()
-}
+If (tChoose = "ACCOUNT") { Set tClassname = "Riches.Account" }
+If (tChoose = "CATEGORY") { Set tClassname = "Riches.Category" }
+If (tChoose = "MERCHANT") {	Set tClassname = "Riches.Merchant" }
+If ($Get(tClassname) '= "") Set tSC = $CLASSMETHOD(tClassname,"OutputFormData")
 </script>
 </form>
 
 <script language="Cache" runat="Server">
 Write "<table>",!
-If (tChoose = "ACCOUNT") {
-	Do ##class(Riches.Account).OutputTableData()
-}
-If (tChoose = "CATEGORY") {
-	Set tSC = ##class(Riches.Category).OutputTableData()
-}
+If (tChoose = "ACCOUNT") { Set tClassname = "Riches.Account" }
+If (tChoose = "CATEGORY") { Set tClassname = "Riches.Category" }
+If (tChoose = "MERCHANT") {	Set tClassname = "Riches.Merchant" }
+If ($Get(tClassname) '= "") Set tSC = $CLASSMETHOD(tClassname,"OutputTableData")
 Write "</table>",!
 /*
 Write "<textarea id='debug' name='debug' rows='5' cols='50'>",!
