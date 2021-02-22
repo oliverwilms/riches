@@ -42,7 +42,7 @@ Form
 </td><td>
 <input type="text" id="iAccount" name="iAccount" size="50" value="#($Get(iAccount))#">
 </td><td>
-<p><a href="Account.csp" target="iframe_chooser">Choose</a></p>
+<p><a href="Chooser.csp?iChoose=Account" target="iframe_chooser">Choose</a></p>
 </td></tr>
 
 <tr><td>
@@ -89,7 +89,7 @@ Form
 <table>
 <th>Chooser</th>
 <tr><td>
-<iframe id="iframe_chooser" name="iframe_chooser" src="" title="Chooser" width="600" height="400" style="border:1px solid black;"></iframe>
+<iframe id="iframe_chooser" name="iframe_chooser" src="chooser.csp" title="Chooser" width="600" height="400" style="border:1px solid black;"></iframe>
 </td></tr>
 </table>
 </body>
