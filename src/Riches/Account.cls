@@ -15,36 +15,36 @@ Property CurrBalance As %Currency;
 
 Property StatementBalance As %Currency;
 
-Property Type As %String(VALUELIST = ",Checking,Savings,Credit Card");
+Property Type As %String(VALUELIST = ",Checking,Savings,Credit Card,Loan,Mortgage,Other");
 
 Property Website As %String;
 
 Property Nickname As %String;
 
+ClassMethod IdentifyAccountType(pValue As %String = "") As %String
+{
+	Set tAccountType = "Other"
+	Set pValue = $ZCONVERT(pValue,"U")
+	If (pValue [ "CHECK") Set tAccountType = "Checking"
+	If (pValue [ "CRED") Set tAccountType = "Credit Card"
+	If (pValue [ "LOAN") Set tAccountType = "Loan"
+	If (pValue [ "MORT") Set tAccountType = "Mortgage"
+	If (pValue [ "SAV") Set tAccountType = "Savings"
+	Quit tAccountType
+}
+
 ClassMethod OutputFormData(iNickname As %String = "", iStartBalance As %String = "") As %Status
 {
 	Set q = """"
 	Set qHidden = q_"hidden"_q
-	Set qRadio = q_"radio"_q
 	Set qSize = q_"50"_q
 	Set qSubmit = q_"submit"_q
 	Set qText = q_"text"_q
 	Set qID = "iChoose"
 	Write "<input type=",qHidden," id=",qID," name=",qID," size=",qSize," value=",q,"Account",q,"><br>",!
-	Write "<table><tr><td>",!
-	Set qName = q_"iType"_q
-	Set qID = q_"TypeChecking"_q
-	Write "<input type=",qRadio," id=",qID," name=",qName," value=",qID,">",!
-	Write "<label for=",qID,">Checking</label><br>",!
-	Write "</td><td>",!
-	Set qID = q_"TypeSavings"_q
-	Write "<input type=",qRadio," id=",qID," name=",qName," value=",qID,">",!
-	Write "<label for=",qID,">Savings</label><br>",!
-	Write "</td><td>",!
-	Set qID = q_"TypeCreditCard"_q
-	Write "<input type=",qRadio," id=",qID," name=",qName," value=",qID,">",!
-	Write "<label for=",qID,">Credit Card</label><br>",!
-	Write "</td></tr></table>",!
+	Write "<table>",!
+	Do ..OutputTableAccountTypes()
+	Write "</table>",!
 	Write "<table><tr><td>"
 	Set qID=q_"iNickname"_q
 	Write "<label for=",qID,">Nickname:</label>",!
@@ -59,6 +59,25 @@ ClassMethod OutputFormData(iNickname As %String = "", iStartBalance As %String =
 	Write "</td></tr></table>",!
 	Set qValue = q_"Submit"_q
 	Write "<input type=",qSubmit," value=",qValue,">",!
+	Quit $$$OK
+}
+
+ClassMethod OutputTableAccountTypes() As %Status
+{
+	Set tSC = $$$OK
+	Write "<tr><td>",!
+	Do ##class(Util).OutputRadio("iType","TypeChecking","Checking")
+	Write "</td><td>",!
+	Do ##class(Util).OutputRadio("iType","TypeSavings","Savings")
+	Write "</td><td>",!
+	Do ##class(Util).OutputRadio("iType","TypeCreditCard","Credit Card")
+	Write "</td><td>",!
+	Do ##class(Util).OutputRadio("iType","TypeLoan","Loan")
+	Write "</td><td>",!
+	Do ##class(Util).OutputRadio("iType","TypeMortgage","Mortgage")
+	Write "</td><td>",!
+	Do ##class(Util).OutputRadio("iType","TypeOther","Other")
+	Write "</td></tr>",!
 	Quit $$$OK
 }
 
@@ -90,7 +109,7 @@ ClassMethod OutputTableData(pWhere As %String = "", pTrClick As %String = "windo
 	Quit tSC
 }
 
-ClassMethod SubmitFormData(ByRef pRequestData) As %Status
+ClassMethod SubmitFormData(ByRef pRequestData, Output pAction) As %Status
 {
 	Do ##class(Util).DebugTEST("Riches.Account - SubmitFormData")
 	Do ##class(Util).DebugMerge("pRequestData = ",.pRequestData)
@@ -103,18 +122,15 @@ ClassMethod SubmitFormData(ByRef pRequestData) As %Status
 	}
 	If ($Data(pRequestData("iType",1))) {
 		Set iType = pRequestData("iType",1)
-		Set iType = $ZCONVERT(iType,"U")
-		If (iType [ "CHECK") Set iType = "Checking"
-		If (iType [ "CRED") Set iType = "Credit Card"
-		If (iType [ "SAV") Set iType = "Savings"
 	}
 	If ($Get(iNickname) '= "") {
 		Set objCategory = ##class(Riches.Account).%New()
 		Set objCategory.Nickname = iNickname
 		Set objCategory.StartBalance = $Get(iStartBalance)
-		Set objCategory.Type = $Get(iType)
+		Set objCategory.Type = ..IdentifyAccountType($Get(iType))
 		Set tSC = objCategory.%Save()
 		Do ##class(Util).DebugStatus(tSC)
+		If $$$ISOK(tSC) Set pAction = "ADD"
 	}
 	Quit tSC
 }
