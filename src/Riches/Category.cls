@@ -27,7 +27,7 @@ ClassMethod OutputFormData(iNickname As %String = "", iSortOrder As %String = ""
 	Write "<input type=",qRadio," id=",qID," name=",qName," value=",qID,">",!
 	Write "<label for=",qID,">Expense</label><br>",!
 	Write "</td></tr></table>",!
-	Write "<table><tr><td>"
+	Write "<table><tr><td>",!
 	Set qID=q_"iNickname"_q
 	Write "<label for=",qID,">Nickname:</label>",!
 	Write "</td><td>",!
