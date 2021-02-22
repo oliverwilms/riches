@@ -15,7 +15,7 @@ Property CurrBalance As %Currency;
 
 Property StatementBalance As %Currency;
 
-Property Type As %String;
+Property Type As %String(VALUELIST = ",Checking,Savings,Credit Card");
 
 Property Website As %String;
 
@@ -24,10 +24,13 @@ Property Nickname As %String;
 ClassMethod OutputFormData(iNickname As %String = "", iStartBalance As %String = "") As %Status
 {
 	Set q = """"
+	Set qHidden = q_"hidden"_q
 	Set qRadio = q_"radio"_q
 	Set qSize = q_"50"_q
 	Set qSubmit = q_"submit"_q
 	Set qText = q_"text"_q
+	Set qID = "iChoose"
+	Write "<input type=",qHidden," id=",qID," name=",qID," size=",qSize," value=",q,"Account",q,"><br>",!
 	Write "<table><tr><td>",!
 	Set qName = q_"iType"_q
 	Set qID = q_"TypeChecking"_q
@@ -40,7 +43,7 @@ ClassMethod OutputFormData(iNickname As %String = "", iStartBalance As %String =
 	Write "</td><td>",!
 	Set qID = q_"TypeCreditCard"_q
 	Write "<input type=",qRadio," id=",qID," name=",qName," value=",qID,">",!
-	Write "<label for=",qID,">Savings</label><br>",!
+	Write "<label for=",qID,">Credit Card</label><br>",!
 	Write "</td></tr></table>",!
 	Write "<table><tr><td>"
 	Set qID=q_"iNickname"_q
@@ -83,6 +86,35 @@ ClassMethod OutputTableData(pWhere As %String = "", pTrClick As %String = "windo
 		Write !,"<td>",tResult.Nickname,"</td>"
 		Write !,"<td>",tResult.Type,"</td>"
 		Write !,"<td>",tResult.StartBalance,"</td></tr>"
+	}
+	Quit tSC
+}
+
+ClassMethod SubmitFormData(ByRef pRequestData) As %Status
+{
+	Do ##class(Util).DebugTEST("Riches.Account - SubmitFormData")
+	Do ##class(Util).DebugMerge("pRequestData = ",.pRequestData)
+	Set tSC = $$$OK
+	If ($Data(pRequestData("iNickname",1))) {
+		Set iNickname = pRequestData("iNickname",1)
+	}
+	If ($Data(pRequestData("iStartBalance",1))) {
+		Set iStartBalance = pRequestData("iStartBalance",1)
+	}
+	If ($Data(pRequestData("iType",1))) {
+		Set iType = pRequestData("iType",1)
+		Set iType = $ZCONVERT(iType,"U")
+		If (iType [ "CHECK") Set iType = "Checking"
+		If (iType [ "CRED") Set iType = "Credit Card"
+		If (iType [ "SAV") Set iType = "Savings"
+	}
+	If ($Get(iNickname) '= "") {
+		Set objCategory = ##class(Riches.Account).%New()
+		Set objCategory.Nickname = iNickname
+		Set objCategory.StartBalance = $Get(iStartBalance)
+		Set objCategory.Type = $Get(iType)
+		Set tSC = objCategory.%Save()
+		Do ##class(Util).DebugStatus(tSC)
 	}
 	Quit tSC
 }
