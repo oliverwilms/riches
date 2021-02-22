@@ -28,4 +28,15 @@ ClassMethod DebugStatus(pStatus As %Status) As %Status
 	Quit ..DebugTEST(tStatus)
 }
 
+ClassMethod OutputRadio(pName As %String = "", pID As %String = "", pCaption As %String) As %Status
+{
+	Set q = """"
+	Set qRadio = q_"radio"_q
+	Set qName = q_pName_q
+	Set qID = q_pID_q
+	Write "<input type=",qRadio," id=",qID," name=",qName," value=",qID,">",!
+	Write "<label for=",qID,">",pCaption,"</label><br>",!
+	Quit $$$OK
+}
+
 }
