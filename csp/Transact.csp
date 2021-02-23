@@ -4,6 +4,9 @@
 Set tHeader = "Riches - Transact"
 Merge pRequestData = %request.Data
 Set tSC = ##class(Riches.Transact).SubmitFormData(.pRequestData,.pAction,.pId)
+/*
+Extract iAmount from %request.Data ? only if Submit was not OK
+*/
 </script>
 <title>#(tHeader)#</title>
 </head>
@@ -70,9 +73,15 @@ Form
 </td></tr>
 
 <tr><td>
-<label for="iAmount">Amount:</label>
+<label for="iAmountDebit">Amount Debit:</label>
 </td><td>
-<input type="text" id="iAmount" name="iAmount" size="50" value="#($Get(iAmount))#"><br>
+<input type="text" id="iAmountDebit" name="iAmountDebit" size="50" value="#($Get(iAmountDebit))#"><br>
+</td></tr>
+
+<tr><td>
+<label for="iAmount">Amount Credit:</label>
+</td><td>
+<input type="text" id="iAmountCredit" name="iAmountCredit" size="50" value="#($Get(iAmountCredit))#"><br>
 </td></tr>
 
 <tr><td>
