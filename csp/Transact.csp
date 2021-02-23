@@ -96,7 +96,9 @@ Form
 <label for="iSubCategory">Sub Category:</label>
 </td><td>
 <input type="text" id="iSubCategory" name="iSubCategory" size="50" value="#($Get(iSubCategory))#"><br>
-</td></tr></table>
+</td></tr>
+<tr><th colspan="2">#(##class(Riches.Util).GetStatusText(tSC))#</th></tr>
+</table>
 
 <input type="submit" value="Submit">
 </form>
