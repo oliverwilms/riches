@@ -2,10 +2,8 @@
 <head>
 <script language="Cache" runat="Server">
 Set tHeader = "Riches - Transact"
-If ($Data(%request.Data("iAccount",1))) {
-	Set iAccount = %request.Data("iAccount",1)
-	Set objAccount = ##class(Riches.Account).%OpenId(iAccount)
-}
+Merge pRequestData = %request.Data
+Set tSC = ##class(Riches.Transact).SubmitFormData(.pRequestData,.pAction,.pId)
 </script>
 <title>#(tHeader)#</title>
 </head>
@@ -30,11 +28,15 @@ For {
 }
 Write "</textarea>","<br>",!
 Write "<a href='/csp/sys/exp/UtilExpGlobalView.csp?$ID2=TESTunit&$NAMESPACE=",$Namespace,"'>View Debug Global</a>"
-*/
 Write "Hidden",!
 Write "<table border=1><tr><td>",!
+If ($Data(%request.Data("iAccount",1))) {
+	Set iAccount = %request.Data("iAccount",1)
+	Set objAccount = ##class(Riches.Account).%OpenId(iAccount)
+}
 If $Data(objAccount),$IsObject(objAccount) { Write objAccount.Nickname }
 Write "</td></tr></table>",!
+*/
 </script>
 
 <form>
@@ -50,19 +52,21 @@ Form
 <tr><td>
 <label for="iTranDate">Date:</label>
 </td><td>
-<input type="text" id="iTranDate" name="iTranDate" size="50" value="#($Get(iTranDate))#"><br>
+<input type="text" id="iTranDate" name="iTranDate" size="50" value="#($Get(iTranDate,$Piece($Horolog,",",1)))#"><br>
 </td></tr>
 
 <tr><td>
 <label for="iTranDate">Time:</label>
 </td><td>
-<input type="text" id="iTranTime" name="iTranTime" size="50" value="#($Get(iTranTime))#"><br>
+<input type="text" id="iTranTime" name="iTranTime" size="50" value="#($Get(iTranTime,$Piece($Horolog,",",2)))#"><br>
 </td></tr>
 
 <tr><td>
 <label for="iMerchant">Merchant:</label>
 </td><td>
 <input type="text" id="iMerchant" name="iMerchant" size="50" value="#($Get(iMerchant))#"><br>
+</td><td>
+<p><a href="Chooser.csp?iChoose=Merchant" target="iframe_chooser">Choose</a></p>
 </td></tr>
 
 <tr><td>
