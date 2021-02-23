@@ -24,11 +24,9 @@ If (tChoose = "MERCHANT") {
 }
 Set tAction = $ZCONVERT($Get(pAction),"U")
 Do ##class(Riches.Util).DebugTEST("<head> tAction = "_tAction)
-If (tAction = "ADD") {
-	If (tChoose = "ACCOUNT") { Set tElementId = "iAccount" }
-	If (tChoose = "CATEGORY") { Set tElementId = "iCategory" }
-	If (tChoose = "MERCHANT") { Set tElementId = "iMerchant" }
-}
+If (tChoose = "ACCOUNT") { Set tElementId = "iAccount" }
+If (tChoose = "CATEGORY") { Set tElementId = "iCategory" }
+If (tChoose = "MERCHANT") { Set tElementId = "iMerchant" }
 </script>
 <script language="JavaScript">
 function onloadHandler()
@@ -38,6 +36,14 @@ function onloadHandler()
 	var tId = '#($Get(pId,""))#';
 	if (tAction != '') {
 		parent.document.getElementById(tElementId).value = tId;
+	}
+}
+function tableClickHandler(id)
+{
+	var tChoose = '#($Get(tChoose,""))#';
+	var tElementId = '#($Get(tElementId,""))#';
+	if (tElementId != '') {
+		parent.document.getElementById(tElementId).value = id;
 	}
 }
 </script>
@@ -60,7 +66,12 @@ Write "<table>",!
 If (tChoose = "ACCOUNT") { Set tClassname = "Riches.Account" }
 If (tChoose = "CATEGORY") { Set tClassname = "Riches.Category" }
 If (tChoose = "MERCHANT") {	Set tClassname = "Riches.Merchant" }
-If ($Get(tClassname) '= "") Set tSC = $CLASSMETHOD(tClassname,"OutputTableData")
+If ($Get(tClassname) '= "") {
+	Set pWhere = ""
+	Set pTrClick = "javascript:tableClickHandler('#');"
+	Set pMaxRows = -1
+	Set tSC = $CLASSMETHOD(tClassname,"OutputTableData",pWhere,pTrClick,pMaxRows)
+}
 Write "</table>",!
 /*
 Write "<textarea id='debug' name='debug' rows='5' cols='50'>",!
