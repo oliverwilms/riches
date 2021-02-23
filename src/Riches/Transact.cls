@@ -3,7 +3,9 @@ Class Riches.Transact Extends %Persistent
 
 Property Account As Account;
 
-Property Amount As %Currency;
+Property AmountCredit As %Currency;
+
+Property AmountDebit As %Currency;
 
 Property Category As Category;
 
@@ -28,9 +30,13 @@ ClassMethod SubmitFormData(ByRef pRequestData, Output pAction, Output pId) As %S
 	If ($Get(iAccount) = "") {
 		Set tSC = $$$ADDSC(tSC,$$$ERROR($$$GeneralError,"Account is required."))
 	}
-	Set iAmount = 0
-	If ($Data(pRequestData("iAmount",1))) {
-		Set iAmount = pRequestData("iAmount",1)
+	Set iAmountCredit = 0
+	If ($Data(pRequestData("iAmountCredit",1))) {
+		Set iAmountCredit = pRequestData("iAmountCredit",1)
+	}
+	Set iAmountDebit = 0
+	If ($Data(pRequestData("iAmountDebit",1))) {
+		Set iAmountDebit = pRequestData("iAmountDebit",1)
 	}
 	If ($Data(pRequestData("iCategory",1))) {
 		Set iCategory = pRequestData("iCategory",1)
@@ -53,7 +59,8 @@ ClassMethod SubmitFormData(ByRef pRequestData, Output pAction, Output pId) As %S
 		Set iTranTime = pRequestData("iTranTime",1)
 	}
 	TSTART
-	&SQL(INSERT INTO Riches.Transact (Account,Amount,Category,Merchant,TranDate,TranTime) VALUES (:iAccount,:iAmount,:iCategory,:iMerchant,:iTranDate,:iTranTime))
+	&SQL(INSERT INTO Riches.Transact (Account,AmountCredit,AmountDebit,Category,Merchant,TranDate,TranTime)
+		VALUES (:iAccount,:iAmountCredit,:iAmountDebit,:iCategory,:iMerchant,:iTranDate,:iTranTime))
 	Do ##class(Util).DebugTEST("SQLCODE = "_SQLCODE)
 	If SQLCODE TRollBack  Quit "Cannot withdraw, SQLCODE = "_SQLCODE
 	/*&SQL(UPDATE A.Account
@@ -76,25 +83,28 @@ Storage Default
 <Value>Account</Value>
 </Value>
 <Value name="3">
-<Value>Amount</Value>
+<Value>AmountCredit</Value>
 </Value>
 <Value name="4">
-<Value>Category</Value>
+<Value>AmountDebit</Value>
 </Value>
 <Value name="5">
-<Value>SubCategory</Value>
+<Value>Category</Value>
 </Value>
 <Value name="6">
-<Value>TranDate</Value>
+<Value>SubCategory</Value>
 </Value>
 <Value name="7">
-<Value>TranTime</Value>
+<Value>Merchant</Value>
 </Value>
 <Value name="8">
-<Value>OtherSide</Value>
+<Value>TranDate</Value>
 </Value>
 <Value name="9">
-<Value>Merchant</Value>
+<Value>TranTime</Value>
+</Value>
+<Value name="10">
+<Value>OtherSide</Value>
 </Value>
 </Data>
 <DataLocation>^Riches.TransactD</DataLocation>
