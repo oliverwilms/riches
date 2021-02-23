@@ -58,6 +58,8 @@ ClassMethod SubmitFormData(ByRef pRequestData, Output pAction, Output pId) As %S
 	If ($Data(pRequestData("iTranTime",1))) {
 		Set iTranTime = pRequestData("iTranTime",1)
 	}
+	Do ##class(Util).DebugStatus(tSC)
+	If $$$ISERR(tSC) Quit tSC
 	TSTART
 	&SQL(INSERT INTO Riches.Transact (Account,AmountCredit,AmountDebit,Category,Merchant,TranDate,TranTime)
 		VALUES (:iAccount,:iAmountCredit,:iAmountDebit,:iCategory,:iMerchant,:iTranDate,:iTranTime))
@@ -69,7 +71,6 @@ ClassMethod SubmitFormData(ByRef pRequestData, Output pAction, Output pId) As %S
     If SQLCODE TROLLBACK  QUIT "Cannot deposit, SQLCODE = "_SQLCODE
 	*/
     TCOMMIT
-	Do ##class(Util).DebugStatus(tSC)
 	Quit tSC
 }
 
