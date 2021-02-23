@@ -28,6 +28,13 @@ ClassMethod DebugStatus(pStatus As %Status) As %Status
 	Quit ..DebugTEST(tStatus)
 }
 
+ClassMethod GetStatusText(pStatus As %Status) As %String
+{
+	Set tErrorText = $SYSTEM.Status.GetErrorText(pStatus)
+	Set tReturn = $REPLACE(tErrorText,"ERROR #5001:","")
+	Quit tReturn
+}
+
 ClassMethod OutputRadio(pName As %String = "", pID As %String = "", pCaption As %String) As %Status
 {
 	Set q = """"
