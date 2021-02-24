@@ -89,9 +89,11 @@ Do ##class(Riches.Transact).OutputFormField("Category","Category",$Get(iCategory
 </form>
 
 <table>
-<th>Chooser</th>
+<th>Chooser</th><th>Ledger</th>
 <tr><td>
 <iframe id="iframe_chooser" name="iframe_chooser" src="chooser.csp" title="Chooser" width="600" height="400" style="border:1px solid black;"></iframe>
+</td><td>
+<iframe id="iframe_ledger" name="iframe_ledger" src="chooser.csp" title="Ledger" width="600" height="400" style="border:1px solid black;"></iframe>
 </td></tr>
 </table>
 </body>
