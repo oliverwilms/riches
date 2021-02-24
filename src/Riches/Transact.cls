@@ -62,6 +62,7 @@ ClassMethod OutputTableData(pWhere As %String = "", pTrClick As %String = "windo
 	IF (tResult.%SQLCODE=0) { /*WRITE !,"Created a query",!*/ }
 	ELSEIF (tResult.%SQLCODE=-361) { /*WRITE !,"Query exists: ",tResult.%Message*/ }
 	ELSE { /*WRITE !,"CREATE QUERY error: ",tResult.%SQLCODE," ",tResult.%Message*/ QUIT tSC}
+	Write !,"<tr><th>Date</th><th>Time</th><th>Merchant</th><th>Category</th><th>Debit</th><th>Credit</th></tr>"
  	While tResult.%Next() {
 	 	//Set tValue = ##class(Util).EncodeLogicalDisplay(tResult.ID,tResult.Nickname)
 		Set tValue = tResult.ID
