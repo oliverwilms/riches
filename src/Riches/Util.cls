@@ -35,6 +35,18 @@ ClassMethod GetStatusText(pStatus As %Status) As %String
 	Quit tReturn
 }
 
+ClassMethod EncodeLogicalDisplay(pLogical As %String = "", pDisplay As %String = "") As %String
+{
+	Set delim = "^"
+	If (pLogical [ delim) {
+		Set pLogical = $Replace(pLogical,delim,"?")
+	}
+	If (pDisplay [ delim) {
+		Set pDisplay = $Replace(pDisplay,delim,"?")
+	}
+	Quit delim_pLogical_delim_pDisplay
+}
+
 ClassMethod OutputRadio(pName As %String = "", pID As %String = "", pCaption As %String) As %Status
 {
 	Set q = """"
