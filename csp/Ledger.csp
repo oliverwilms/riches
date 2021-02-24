@@ -4,6 +4,8 @@
 Set tHeader = "Riches - Ledger"
 If ($Data(%request.Data("iAccount",1))) {
 	Set iAccount = %request.Data("iAccount",1)
+}
+If ($Get(iAccount) '= "") {
 	Set objAccount = ##class(Riches.Account).%OpenId(iAccount)
 	If $IsObject(objAccount) {
 		Set tNickname = objAccount.Nickname
@@ -42,7 +44,9 @@ function updateLogicalDisplay(id)
 Set tClassname = "Riches.Transact"
 Set pWhere = ""
 If $Data(objAccount),$IsObject(objAccount) {
-	Set pWhere = "Account = "_objAccount.ID
+	Do ##class(Riches.Util).DebugTEST("Ledger.csp objAccount = "_objAccount)
+
+	Set pWhere = "Account = "_objAccount.%Id()
 	Set pTrClick = "javascript:tableClickHandler('#');"
 	Set pMaxRows = -1
 	Set tSC = $CLASSMETHOD(tClassname,"OutputTableData",pWhere,pTrClick,pMaxRows)
