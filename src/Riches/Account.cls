@@ -126,6 +126,7 @@ ClassMethod SubmitFormData(ByRef pRequestData, Output pAction, Output pId) As %S
 	If ($Data(pRequestData("iType",1))) {
 		Set iType = pRequestData("iType",1)
 	}
+	If ($Get(iStartBalance) = "") Set iStartBalance = 0
 	If ($Get(iNickname) '= "") {
 		Set objAccount = ##class(Riches.Account).%New()
 		Set objAccount.Nickname = iNickname
