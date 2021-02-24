@@ -10,6 +10,7 @@ If ($Get(iAccount) '= "") {
 	If $IsObject(objAccount) {
 		Set tNickname = objAccount.Nickname
 		Set tStartBalance = objAccount.StartBalance
+		Set tCurrBalance = objAccount.CurrBalance
 		Set tHeader = "Riches - "_tNickname_" Ledger"
 	}
 }
@@ -67,6 +68,11 @@ Write "</textarea>","<br>",!
 Write "<a href='/csp/sys/exp/UtilExpGlobalView.csp?$ID2=TESTunit&$NAMESPACE=",$Namespace,"'>View Debug Global</a>"
 */
 </script>
+<table border=1>
+<tr>
+<td>Current Balance</td>
+<td>#($Get(tCurrBalance))#</td>
+</tr>
 
 </body>
 </html>
