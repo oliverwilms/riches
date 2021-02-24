@@ -11,35 +11,10 @@ If ($Data(%request.Data("iAccount",1))) {
 		Set tHeader = "Riches - "_tNickname_" Ledger"
 	}
 }
-Set tChoose = $ZCONVERT($Get(iChoose),"U")
-Do ##class(Riches.Util).DebugTEST("<head> tChoose = "_tChoose)
-If (tChoose = "ACCOUNT") {
-	Set tClassname = "Riches.Account"
-	Set tElement = "Account" 
-}
-If (tChoose = "CATEGORY") {
-	Set tClassname = "Riches.Category"
-	Set tElement = "Category"
-}
-If (tChoose = "MERCHANT") {
-	Set tClassname = "Riches.Merchant"
-	Set tElement = "Merchant"
-}
-If ($Get(tClassname) '= "") {
-	Merge pRequestData = %request.Data
-	Set tSC = $CLASSMETHOD(tClassname,"SubmitFormData",.pRequestData,.pAction,.pLogicalDisplay)
-}
-Set tAction = $ZCONVERT($Get(pAction),"U")
-Do ##class(Riches.Util).DebugTEST("<head> tAction = "_tAction)
 </script>
 <script language="JavaScript">
 function onloadHandler()
 {
-	var tAction = '#($Get(tAction,""))#';
-	var tLogicalDisplay = '#($Get(pLogicalDisplay,""))#';
-	if (tAction != '') {
-		updateLogicalDisplay(tLogicalDisplay);
-	}
 }
 function tableClickHandler(id)
 {
@@ -47,27 +22,12 @@ function tableClickHandler(id)
 }
 function updateLogicalDisplay(id)
 {
-	var delim = '^';
-	var arr = id.split(delim);
-	var tDisplay = 'd' + '#($Get(tElement,""))#';
-	var tLogical = 'i' + '#($Get(tElement,""))#';
-	parent.document.getElementById(tLogical).value = arr[1];
-	parent.document.getElementById(tDisplay).value = arr[2];
 }
 </script>
 <title>#(tHeader)#</title>
 </head>
 <body onload="onloadHandler();">
 <h2>#(tHeader)#</h2>
-<form>
-<script language="Cache" runat="Server">
-Do ##class(Riches.Util).DebugTEST("<form> tChoose = "_tChoose)
-If (tChoose = "ACCOUNT") { Set tClassname = "Riches.Account" }
-If (tChoose = "CATEGORY") { Set tClassname = "Riches.Category" }
-If (tChoose = "MERCHANT") {	Set tClassname = "Riches.Merchant" }
-If ($Get(tClassname) '= "") Set tSC = $CLASSMETHOD(tClassname,"OutputFormData")
-</script>
-</form>
 
 <table border=1>
 <tr>
@@ -79,14 +39,10 @@ If ($Get(tClassname) '= "") Set tSC = $CLASSMETHOD(tClassname,"OutputFormData")
 </table>
 <table border=1>
 <script language="Cache" runat="Server">
-//Do ##class(Riches.Util).DebugTEST("<form> tChoose = "_tChoose)
-If (tChoose = "ACCOUNT") { Set tClassname = "Riches.Account" }
-If (tChoose = "CATEGORY") { Set tClassname = "Riches.Category" }
-If (tChoose = "MERCHANT") {	Set tClassname = "Riches.Merchant" }
-//If ($Get(tClassname) '= "") Set tSC = $CLASSMETHOD(tClassname,"OutputFormData")
 Set tClassname = "Riches.Transact"
-If ($Get(tClassname) '= "") {
-	Set pWhere = ""
+Set pWhere = ""
+If $Data(objAccount),$IsObject(objAccount) {
+	Set pWhere = "Account = "_objAccount.ID
 	Set pTrClick = "javascript:tableClickHandler('#');"
 	Set pMaxRows = -1
 	Set tSC = $CLASSMETHOD(tClassname,"OutputTableData",pWhere,pTrClick,pMaxRows)
