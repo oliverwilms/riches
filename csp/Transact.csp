@@ -4,23 +4,29 @@
 Set tHeader = "Riches - Transact"
 Merge pRequestData = %request.Data
 Set tSC = ##class(Riches.Transact).SubmitFormData(.pRequestData,.pAction,.pId)
-/*
-Extract iAmount from %request.Data ? only if Submit was not OK
-*/
+/* Extract iAccount from %request.Data */
+If ($Data(%request.Data("iAccount",1))) {
+	Set iAccount = %request.Data("iAccount",1)
+}
+/* Retrieve other data only when Submit failed */
+If $$$ISERR(tSC) {
+	If ($Data(%request.Data("iAmountCredit",1))) {
+		Set iAmountCredit = %request.Data("iAmountCredit",1)
+	}
+	If ($Data(%request.Data("iAmountDebit",1))) {
+		Set iAmountDebit = %request.Data("iAmountDebit",1)
+	}
+	If ($Data(%request.Data("iCategory",1))) {
+		Set iCategory = %request.Data("iCategory",1)
+	}
+	If ($Data(%request.Data("iMerchant",1))) {
+		Set iMerchant = %request.Data("iMerchant",1)
+	}
+}
 </script>
 <script language="JavaScript">
 function onloadHandler()
 {
-	var tAction = '#($Get(tAction,""))#';
-	var tElementId = '#($Get(tElementId,""))#';
-	var tId = '#($Get(pId,""))#';
-	if (tAction != '') {
-		parent.document.getElementById(tElementId).value = tId;
-	}
-}
-function iDisplay(id)
-{
-	alert(id);
 }
 </script>
 <title>#(tHeader)#</title>
@@ -63,64 +69,12 @@ Write "</td></tr></table>",!
 
 <script language="Cache" runat="Server">
 Do ##class(Riches.Transact).OutputFormField("Account","Account",$Get(iAccount))
-/*
-<tr><td>
-<label for="iAccount">Account:</label>
-</td><td>
-<input type="text" id="iAccount" name="iAccount" size="50" value="#($Get(iAccount))#" onchange="iDisplay('Account')">
-</td><td>
-<p><a href="Chooser.csp?iChoose=Account" target="iframe_chooser">Choose</a></p>
-</td></tr>
-*/
-</script>
-<tr><td>
-<label for="iTranDate">Date:</label>
-</td><td>
-<input type="text" id="iTranDate" name="iTranDate" size="50" value="#($Get(iTranDate,$Piece($Horolog,",",1)))#" oninput="iDisplay('TranDate')">
-</td></tr>
-
-<tr><td>
-<label for="iTranDate">Time:</label>
-</td><td>
-<input type="text" id="iTranTime" name="iTranTime" size="50" value="#($Get(iTranTime,$Piece($Horolog,",",2)))#"><br>
-</td></tr>
-
-<script language="Cache" runat="Server">
+Do ##class(Riches.Transact).OutputFormField("TranDate","Date",$Get(iTranDate,$Piece($Horolog,",",1)))
+Do ##class(Riches.Transact).OutputFormField("TranTime","Time",$Get(iTranTime,$Piece($Horolog,",",2)))
 Do ##class(Riches.Transact).OutputFormField("Merchant","Merchant",$Get(iMerchant))
-/*
-<tr><td>
-<label for="iMerchant">Merchant:</label>
-</td><td>
-<input type="text" id="iMerchant" name="iMerchant" size="50" value="#($Get(iMerchant))#"><br>
-</td><td>
-<p><a href="Chooser.csp?iChoose=Merchant" target="iframe_chooser">Choose</a></p>
-</td></tr>
-*/
-</script>
-
-<tr><td>
-<label for="iAmountDebit">Amount Debit:</label>
-</td><td>
-<input type="text" id="iAmountDebit" name="iAmountDebit" size="50" value="#($Get(iAmountDebit))#"><br>
-</td></tr>
-
-<tr><td>
-<label for="iAmount">Amount Credit:</label>
-</td><td>
-<input type="text" id="iAmountCredit" name="iAmountCredit" size="50" value="#($Get(iAmountCredit))#"><br>
-</td></tr>
-
-<script language="Cache" runat="Server">
+Do ##class(Riches.Transact).OutputFormField("AmountDebit","Amount Debit",$Get(iAmountDebit))
+Do ##class(Riches.Transact).OutputFormField("AmountCredit","Amount Credit",$Get(iAmountCredit))
 Do ##class(Riches.Transact).OutputFormField("Category","Category",$Get(iCategory))
-/*
-<tr><td>
-<label for="iCategory">Category:</label>
-</td><td>
-<input type="text" id="iCategory" name="iCategory" size="50" value="#($Get(iCategory))#"><br>
-</td><td>
-<p><a href="Chooser.csp?iChoose=Category" target="iframe_chooser">Choose</a></p>
-</td></tr>
-*/
 </script>
 
 <tr><td>
@@ -128,7 +82,7 @@ Do ##class(Riches.Transact).OutputFormField("Category","Category",$Get(iCategory
 </td><td>
 <input type="text" id="iSubCategory" name="iSubCategory" size="50" value="#($Get(iSubCategory))#"><br>
 </td></tr>
-<tr><th colspan="2">#(##class(Riches.Util).GetStatusText(tSC))#</th></tr>
+<tr><th colspan="3">#(##class(Riches.Util).GetStatusText(tSC))#</th></tr>
 </table>
 
 <input type="submit" value="Submit">
