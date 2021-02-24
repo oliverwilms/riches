@@ -19,6 +19,23 @@ Property TranTime As %Time;
 
 Property OtherSide As Transact;
 
+ClassMethod OutputFormField(pField As %String = "Account", pCaption As %String = "", pValue As %String = "") As %Status
+{
+	Set q = """"
+	Set qHref = q_"Chooser.csp?iChoose="_pField_q
+	Set qID = q_"i"_pField_q
+	Set qIDD = q_"d"_pField_q
+	Set qSize = q_"50"_q
+	Set qTarget = q_"iframe_chooser"_q
+	Set qText = q_"text"_q
+	Set qValue = q_pValue_q
+	Write "<tr><td><label for=",qID,">",pCaption,":</label></td>",!
+	Write "<td><input type=",qText," id=",qID," name=",qID," size=",qSize," value=",qValue,"></td>",!
+	Write "<td><input type=",qText," id=",qIDD," size=",qSize," value=",qValue,"></td>",!
+	Write "<td><p><a href=",qHref," target=",qTarget,">Choose</a></p></td></tr>",!
+	Quit $$$OK
+}
+
 ClassMethod SubmitFormData(ByRef pRequestData, Output pAction, Output pId) As %Status
 {
 	Do ##class(Util).DebugTEST("Riches.Transact - SubmitFormData")
@@ -70,7 +87,7 @@ ClassMethod SubmitFormData(ByRef pRequestData, Output pAction, Output pId) As %S
         WHERE A.Account.AccountNum = :to)
     If SQLCODE TROLLBACK  QUIT "Cannot deposit, SQLCODE = "_SQLCODE
 	*/
-    TCOMMIT
+	TCOMMIT
 	Quit tSC
 }
 
