@@ -51,8 +51,7 @@ ClassMethod OutputTableData(pWhere As %String = "", pTrClick As %String = "windo
 	Set tQuote = """"
 	Set tSC = $$$OK
 	Set tWHERE = ""
-	If (pWhere '= "") Set tWHERE = " WHERE Session = '"_pWhere_"'"  // This did not return any result
-	If (pWhere '= "") Set tWHERE = " WHERE Session LIKE '"_$TRANSLATE(pWhere," ","%")_"'"
+	If (pWhere '= "") Set tWHERE = " WHERE "_pWhere
 	Set tQuery = "SELECT * FROM Riches.Transact"_tWHERE
 	Do ##class(Util).DebugTEST("tQuery = "_tQuery)
 	Set tStatement = ##class(%SQL.Statement).%New()
