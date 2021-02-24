@@ -103,7 +103,8 @@ ClassMethod OutputTableData(pWhere As %String = "", pTrClick As %String = "javas
 	ELSEIF (tResult.%SQLCODE=-361) { /*WRITE !,"Query exists: ",tResult.%Message*/ }
 	ELSE { /*WRITE !,"CREATE QUERY error: ",tResult.%SQLCODE," ",tResult.%Message*/ QUIT tSC}
  	While tResult.%Next() {
-		Write !,"<tr onclick=",tQuote,$Replace(pTrClick,"#",tResult.ID),tQuote,">"
+	 	Set tValue = ##class(Util).EncodeLogicalDisplay(tResult.ID,tResult.Nickname)
+		Write !,"<tr onclick=",tQuote,$Replace(pTrClick,"#",tValue),tQuote,">"
 		Write !,"<td>",tResult.Nickname,"</td>"
 		Write !,"<td>",tResult.Type,"</td>"
 		Write !,"<td>",tResult.StartBalance,"</td></tr>"
@@ -134,7 +135,7 @@ ClassMethod SubmitFormData(ByRef pRequestData, Output pAction, Output pId) As %S
 		Do ##class(Util).DebugStatus(tSC)
 		If $$$ISOK(tSC) {
 			Set pAction = "ADD"
-			Set pId = objAccount.%Id()
+		 	Set pId = ##class(Util).EncodeLogicalDisplay(objAccount.%Id(),objAccount.Nickname)
 		}
 	}
 	Quit tSC
