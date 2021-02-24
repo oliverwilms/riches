@@ -30,6 +30,7 @@ ClassMethod DebugStatus(pStatus As %Status) As %Status
 
 ClassMethod GetStatusText(pStatus As %Status) As %String
 {
+	If $$$ISOK(pStatus) Quit "OK"
 	Set tErrorText = $SYSTEM.Status.GetErrorText(pStatus)
 	Set tReturn = $REPLACE(tErrorText,"ERROR #5001:","")
 	Quit tReturn
@@ -45,6 +46,25 @@ ClassMethod EncodeLogicalDisplay(pLogical As %String = "", pDisplay As %String =
 		Set pDisplay = $Replace(pDisplay,delim,"?")
 	}
 	Quit delim_pLogical_delim_pDisplay
+}
+
+ClassMethod ExecuteQueryOneValue(pQuery As %String, ByRef pResult As %String) As %Status
+{
+	Do ..DebugTEST("Riches.Util - ExecuteQueryOneValue")
+	Do ..DebugTEST("pQuery = "_pQuery)
+	Set pResult = ""
+	Set rs = ##class(%ResultSet).%New()
+	Set tSC = rs.Prepare(pQuery)
+	Do ..DebugStatus(tSC)
+	If $$$ISOK(tSC) {
+		Set tSC = rs.Execute()
+		Do ..DebugStatus(tSC)
+		If $$$ISOK(tSC), rs.Next() Set pResult = rs.GetData(1)
+	}
+	Do rs.Close()
+	Set rs = ""
+	Do ..DebugTEST("pResult = "_pResult)
+	Quit tSC
 }
 
 ClassMethod OutputRadio(pName As %String = "", pID As %String = "", pCaption As %String) As %Status
