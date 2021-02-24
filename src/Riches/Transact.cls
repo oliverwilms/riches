@@ -44,6 +44,44 @@ ClassMethod OutputFormField(pField As %String = "Account", pCaption As %String =
 	Quit $$$OK
 }
 
+ClassMethod OutputTableData(pWhere As %String = "", pTrClick As %String = "window.location='Transact.csp?iAccount=#';", pMaxRows = -1) As %Status
+{
+	Do ##class(Util).DebugTEST("Riches.Transact - OutputTableData")
+	Do ##class(Util).DebugTEST("pWhere = "_pWhere)
+	Set tQuote = """"
+	Set tSC = $$$OK
+	Set tWHERE = ""
+	If (pWhere '= "") Set tWHERE = " WHERE Session = '"_pWhere_"'"  // This did not return any result
+	If (pWhere '= "") Set tWHERE = " WHERE Session LIKE '"_$TRANSLATE(pWhere," ","%")_"'"
+	Set tQuery = "SELECT * FROM Riches.Transact"_tWHERE
+	Do ##class(Util).DebugTEST("tQuery = "_tQuery)
+	Set tStatement = ##class(%SQL.Statement).%New()
+	Set tSC = tStatement.%Prepare(.tQuery)  // Create a cached query
+	If $$$ISERR(tSC) { Quit tSC }
+	#dim tResult As %SQL.StatementResult
+	Set tResult = tStatement.%Execute()
+	IF (tResult.%SQLCODE=0) { /*WRITE !,"Created a query",!*/ }
+	ELSEIF (tResult.%SQLCODE=-361) { /*WRITE !,"Query exists: ",tResult.%Message*/ }
+	ELSE { /*WRITE !,"CREATE QUERY error: ",tResult.%SQLCODE," ",tResult.%Message*/ QUIT tSC}
+ 	While tResult.%Next() {
+	 	//Set tValue = ##class(Util).EncodeLogicalDisplay(tResult.ID,tResult.Nickname)
+		Set tValue = tResult.ID
+		Write !,"<tr onclick=",tQuote,$Replace(pTrClick,"#",tValue),tQuote,">"
+		Write !,"<td>",$ZDATE(tResult.TranDate),"</td>"
+		Write !,"<td>",$ZTIME(tResult.TranTime),"</td>"
+		Set tQuery = "SELECT Nickname FROM Riches.Merchant WHERE ID = "_tResult.Merchant
+		Set tSC = ##class(Util).ExecuteQueryOneValue(tQuery,.tDisplay)
+		Write !,"<td>",tDisplay,"</td>"
+		Set tQuery = "SELECT Nickname FROM Riches.Category WHERE ID = "_tResult.Category
+		Set tSC = ##class(Util).ExecuteQueryOneValue(tQuery,.tDisplay)
+		Write !,"<td>",tDisplay,"</td>"
+		Write !,"<td>",tResult.AmountDebit,"</td>"
+		Write !,"<td>",tResult.AmountCredit,"</td>"
+		Write !,"</tr>"
+	}
+	Quit tSC
+}
+
 ClassMethod SubmitFormData(ByRef pRequestData, Output pAction, Output pId) As %Status
 {
 	Do ##class(Util).DebugTEST("Riches.Transact - SubmitFormData")
@@ -93,7 +131,7 @@ ClassMethod SubmitFormData(ByRef pRequestData, Output pAction, Output pId) As %S
 	Do ##class(Util).DebugTEST("SQLCODE = "_SQLCODE)
 	If SQLCODE TROLLBACK  Quit $$$ERROR($$$GeneralError,"Cannot INSERT Transact - SQLCODE = "_SQLCODE)
 	&SQL(UPDATE Riches.Account SET CurrBalance = CurrBalance - :iAmountDebit + :iAmountCredit WHERE ID = :iAccount)
-    If SQLCODE TROLLBACK  Quit $$$ERROR($$$GeneralError,"Cannot UPDATE Account - SQLCODE = "_SQLCODE)
+	If SQLCODE TROLLBACK  Quit $$$ERROR($$$GeneralError,"Cannot UPDATE Account - SQLCODE = "_SQLCODE)
 	TCOMMIT
 	Quit tSC
 }
