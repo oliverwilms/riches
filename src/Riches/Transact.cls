@@ -29,9 +29,17 @@ ClassMethod OutputFormField(pField As %String = "Account", pCaption As %String =
 	Set qTarget = q_"iframe_chooser"_q
 	Set qText = q_"text"_q
 	Set qValue = q_pValue_q
+	If (pField = "Account") Set tQuery = "SELECT Nickname FROM Riches.Account WHERE ID = "_pValue
+	If (pField = "Category") Set tQuery = "SELECT Nickname FROM Riches.Category WHERE ID = "_pValue
+	If (pField = "Merchant") Set tQuery = "SELECT Nickname FROM Riches.Merchant WHERE ID = "_pValue
+	If ($Get(tQuery) '= "") Set tSC = ##class(Util).ExecuteQueryOneValue(tQuery,.tDisplay)
+	If (pField [ "Amount") Set tDisplay = pValue
+	If (pField [ "Date") Set tDisplay = $ZDATE(pValue)
+	If (pField [ "Time") Set tDisplay = $ZTIME(pValue)
+	Set qDisplay = q_$Get(tDisplay)_q
 	Write "<tr><td><label for=",qID,">",pCaption,":</label></td>",!
 	Write "<td><input type=",qText," id=",qID," name=",qID," size=",qSize," value=",qValue,"></td>",!
-	Write "<td><input type=",qText," id=",qIDD," size=",qSize," value=",qValue,"></td>",!
+	Write "<td><input type=",qText," id=",qIDD," size=",qSize," value=",qDisplay,"></td>",!
 	Write "<td><p><a href=",qHref," target=",qTarget,">Choose</a></p></td></tr>",!
 	Quit $$$OK
 }
@@ -50,10 +58,12 @@ ClassMethod SubmitFormData(ByRef pRequestData, Output pAction, Output pId) As %S
 	Set iAmountCredit = 0
 	If ($Data(pRequestData("iAmountCredit",1))) {
 		Set iAmountCredit = pRequestData("iAmountCredit",1)
+		If (iAmountCredit = "") Set iAmountCredit = 0
 	}
 	Set iAmountDebit = 0
 	If ($Data(pRequestData("iAmountDebit",1))) {
 		Set iAmountDebit = pRequestData("iAmountDebit",1)
+		If (iAmountDebit = "") Set iAmountDebit = 0
 	}
 	If ($Data(pRequestData("iCategory",1))) {
 		Set iCategory = pRequestData("iCategory",1)
@@ -81,12 +91,9 @@ ClassMethod SubmitFormData(ByRef pRequestData, Output pAction, Output pId) As %S
 	&SQL(INSERT INTO Riches.Transact (Account,AmountCredit,AmountDebit,Category,Merchant,TranDate,TranTime)
 		VALUES (:iAccount,:iAmountCredit,:iAmountDebit,:iCategory,:iMerchant,:iTranDate,:iTranTime))
 	Do ##class(Util).DebugTEST("SQLCODE = "_SQLCODE)
-	If SQLCODE TRollBack  Quit "Cannot withdraw, SQLCODE = "_SQLCODE
-	/*&SQL(UPDATE A.Account
-        SET A.Account.Balance = A.Account.Balance + :amount
-        WHERE A.Account.AccountNum = :to)
-    If SQLCODE TROLLBACK  QUIT "Cannot deposit, SQLCODE = "_SQLCODE
-	*/
+	If SQLCODE TROLLBACK  Quit $$$ERROR($$$GeneralError,"Cannot INSERT Transact - SQLCODE = "_SQLCODE)
+	&SQL(UPDATE Riches.Account SET CurrBalance = CurrBalance - :iAmountDebit + :iAmountCredit WHERE ID = :iAccount)
+    If SQLCODE TROLLBACK  Quit $$$ERROR($$$GeneralError,"Cannot UPDATE Account - SQLCODE = "_SQLCODE)
 	TCOMMIT
 	Quit tSC
 }
