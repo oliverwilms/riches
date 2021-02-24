@@ -8,6 +8,21 @@ Set tSC = ##class(Riches.Transact).SubmitFormData(.pRequestData,.pAction,.pId)
 Extract iAmount from %request.Data ? only if Submit was not OK
 */
 </script>
+<script language="JavaScript">
+function onloadHandler()
+{
+	var tAction = '#($Get(tAction,""))#';
+	var tElementId = '#($Get(tElementId,""))#';
+	var tId = '#($Get(pId,""))#';
+	if (tAction != '') {
+		parent.document.getElementById(tElementId).value = tId;
+	}
+}
+function iDisplay(id)
+{
+	alert(id);
+}
+</script>
 <title>#(tHeader)#</title>
 </head>
 
@@ -43,19 +58,25 @@ Write "</td></tr></table>",!
 </script>
 
 <form>
-Form
-<table border=1><tr><td>
+<table border=1>
+<tr><th>Form</th><th>Logical</th><th>Display</th></tr>
+
+<script language="Cache" runat="Server">
+Do ##class(Riches.Transact).OutputFormField("Account","Account",$Get(iAccount))
+/*
+<tr><td>
 <label for="iAccount">Account:</label>
 </td><td>
-<input type="text" id="iAccount" name="iAccount" size="50" value="#($Get(iAccount))#">
+<input type="text" id="iAccount" name="iAccount" size="50" value="#($Get(iAccount))#" onchange="iDisplay('Account')">
 </td><td>
 <p><a href="Chooser.csp?iChoose=Account" target="iframe_chooser">Choose</a></p>
 </td></tr>
-
+*/
+</script>
 <tr><td>
 <label for="iTranDate">Date:</label>
 </td><td>
-<input type="text" id="iTranDate" name="iTranDate" size="50" value="#($Get(iTranDate,$Piece($Horolog,",",1)))#"><br>
+<input type="text" id="iTranDate" name="iTranDate" size="50" value="#($Get(iTranDate,$Piece($Horolog,",",1)))#" oninput="iDisplay('TranDate')">
 </td></tr>
 
 <tr><td>
@@ -64,6 +85,9 @@ Form
 <input type="text" id="iTranTime" name="iTranTime" size="50" value="#($Get(iTranTime,$Piece($Horolog,",",2)))#"><br>
 </td></tr>
 
+<script language="Cache" runat="Server">
+Do ##class(Riches.Transact).OutputFormField("Merchant","Merchant",$Get(iMerchant))
+/*
 <tr><td>
 <label for="iMerchant">Merchant:</label>
 </td><td>
@@ -71,6 +95,8 @@ Form
 </td><td>
 <p><a href="Chooser.csp?iChoose=Merchant" target="iframe_chooser">Choose</a></p>
 </td></tr>
+*/
+</script>
 
 <tr><td>
 <label for="iAmountDebit">Amount Debit:</label>
@@ -84,6 +110,9 @@ Form
 <input type="text" id="iAmountCredit" name="iAmountCredit" size="50" value="#($Get(iAmountCredit))#"><br>
 </td></tr>
 
+<script language="Cache" runat="Server">
+Do ##class(Riches.Transact).OutputFormField("Category","Category",$Get(iCategory))
+/*
 <tr><td>
 <label for="iCategory">Category:</label>
 </td><td>
@@ -91,6 +120,8 @@ Form
 </td><td>
 <p><a href="Chooser.csp?iChoose=Category" target="iframe_chooser">Choose</a></p>
 </td></tr>
+*/
+</script>
 
 <tr><td>
 <label for="iSubCategory">Sub Category:</label>
