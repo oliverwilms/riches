@@ -64,8 +64,8 @@ If ($Get(tClassname) '= "") Set tSC = $CLASSMETHOD(tClassname,"OutputFormData")
 </script>
 </form>
 
+<table border=1>
 <script language="Cache" runat="Server">
-Write "<table>",!
 If (tChoose = "ACCOUNT") { Set tClassname = "Riches.Account" }
 If (tChoose = "CATEGORY") { Set tClassname = "Riches.Category" }
 If (tChoose = "MERCHANT") {	Set tClassname = "Riches.Merchant" }
