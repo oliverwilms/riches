@@ -130,6 +130,7 @@ ClassMethod SubmitFormData(ByRef pRequestData, Output pAction, Output pId) As %S
 		Set objAccount = ##class(Riches.Account).%New()
 		Set objAccount.Nickname = iNickname
 		Set objAccount.StartBalance = $Get(iStartBalance)
+		Set objAccount.CurrBalance = objAccount.StartBalance
 		Set objAccount.Type = ..IdentifyAccountType($Get(iType))
 		Set tSC = objAccount.%Save()
 		Do ##class(Util).DebugStatus(tSC)
