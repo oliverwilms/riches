@@ -44,10 +44,14 @@ function updateLogicalDisplay(id)
 {
 	var delim = '^';
 	var arr = id.split(delim);
-	var tDisplay = 'd' + '#($Get(tElement,""))#';
-	var tLogical = 'i' + '#($Get(tElement,""))#';
+	var tElement = '#($Get(tElement,""))#';
+	var tDisplay = 'd' + tElement;
+	var tLogical = 'i' + tElement;
 	parent.document.getElementById(tLogical).value = arr[1];
 	parent.document.getElementById(tDisplay).value = arr[2];
+	if (tElement == 'Account') {
+		parent.document.getElementById("iframe_ledger").src = 'Ledger.csp?iAccount=' + arr[1];
+	}
 }
 </script>
 <title>#(tHeader)#</title>
