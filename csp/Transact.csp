@@ -28,7 +28,8 @@ If $$$ISERR(tSC) {
 <script language="JavaScript">
 function onloadHandler()
 {
-//document.getElementById("iframe_ledger").src = 'Ledger.csp?iAccount=1';
+	var iAccount = document.getElementById("iAccount").value;
+	document.getElementById("iframe_ledger").src = 'Ledger.csp?iAccount='+iAccount;
 }
 </script>
 <title>#(tHeader)#</title>
