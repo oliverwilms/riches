@@ -102,12 +102,13 @@ ClassMethod OutputTableData(pWhere As %String = "", pTrClick As %String = "javas
 	IF (tResult.%SQLCODE=0) { /*WRITE !,"Created a query",!*/ }
 	ELSEIF (tResult.%SQLCODE=-361) { /*WRITE !,"Query exists: ",tResult.%Message*/ }
 	ELSE { /*WRITE !,"CREATE QUERY error: ",tResult.%SQLCODE," ",tResult.%Message*/ QUIT tSC}
+	Write !,"<tr><th>Account</th><th>Type</th><th>Balance</th></tr>"
  	While tResult.%Next() {
 	 	Set tValue = ##class(Util).EncodeLogicalDisplay(tResult.ID,tResult.Nickname)
 		Write !,"<tr onclick=",tQuote,$Replace(pTrClick,"#",tValue),tQuote,">"
 		Write !,"<td>",tResult.Nickname,"</td>"
 		Write !,"<td>",tResult.Type,"</td>"
-		Write !,"<td>",tResult.StartBalance,"</td></tr>"
+		Write !,"<td>",tResult.CurrBalance,"</td></tr>"
 	}
 	Quit tSC
 }
