@@ -125,11 +125,14 @@ ClassMethod SubmitFormData(ByRef pRequestData, Output pAction, Output pId) As %S
 	If ($Data(pRequestData("iTranTime",1))) {
 		Set iTranTime = pRequestData("iTranTime",1)
 	}
+	If ($Data(pRequestData("iCheckNumber",1))) {
+		Set iCheckNumber = pRequestData("iCheckNumber",1)
+	}
 	Do ##class(Util).DebugStatus(tSC)
 	If $$$ISERR(tSC) Quit tSC
 	TSTART
-	&SQL(INSERT INTO Riches.Transact (Account,AmountCredit,AmountDebit,Category,Merchant,TranDate,TranTime)
-		VALUES (:iAccount,:iAmountCredit,:iAmountDebit,:iCategory,:iMerchant,:iTranDate,:iTranTime))
+	&SQL(INSERT INTO Riches.Transact (Account,AmountCredit,AmountDebit,Category,Merchant,TranDate,TranTime,CheckNumber)
+		VALUES (:iAccount,:iAmountCredit,:iAmountDebit,:iCategory,:iMerchant,:iTranDate,:iTranTime,:iCheckNumber))
 	Do ##class(Util).DebugTEST("SQLCODE = "_SQLCODE)
 	If SQLCODE TROLLBACK  Quit $$$ERROR($$$GeneralError,"Cannot INSERT Transact - SQLCODE = "_SQLCODE)
 	&SQL(UPDATE Riches.Account SET CurrBalance = CurrBalance - :iAmountDebit + :iAmountCredit WHERE ID = :iAccount)
