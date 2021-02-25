@@ -17,6 +17,8 @@ Property TranDate As %Date;
 
 Property TranTime As %Time;
 
+Property CheckNumber As %Integer;
+
 Property OtherSide As Transact;
 
 ClassMethod OutputFormField(pField As %String = "Account", pCaption As %String = "", pValue As %String = "") As %Status
@@ -167,6 +169,9 @@ Storage Default
 <Value>TranTime</Value>
 </Value>
 <Value name="10">
+<Value>CheckNumber</Value>
+</Value>
+<Value name="11">
 <Value>OtherSide</Value>
 </Value>
 </Data>
