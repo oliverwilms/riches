@@ -3,7 +3,8 @@
 <script language="Cache" runat="Server">
 Set tHeader = "Riches - Transact"
 Merge pRequestData = %request.Data
-Set tSC = ##class(Riches.Transact).SubmitFormData(.pRequestData,.pAction,.pId)
+Set tSC = ##class(Riches.RequestData).LogRequest(.pRequestData,"Transact.csp")
+If $$$ISOK(tSC) Set tSC = ##class(Riches.Transact).SubmitFormData(.pRequestData,.pAction,.pId)
 /* Extract iAccount from %request.Data */
 If ($Data(%request.Data("iAccount",1))) {
 	Set iAccount = %request.Data("iAccount",1)
@@ -27,12 +28,13 @@ If $$$ISERR(tSC) {
 <script language="JavaScript">
 function onloadHandler()
 {
+//document.getElementById("iframe_ledger").src = 'Ledger.csp?iAccount=1';
 }
 </script>
 <title>#(tHeader)#</title>
 </head>
 
-<body>
+<body onload="onloadHandler();">
 <h1>#(tHeader)#</h1>
 
 <script language="Cache" runat="Server">
@@ -71,6 +73,7 @@ Write "</td></tr></table>",!
 Do ##class(Riches.Transact).OutputFormField("Account","Account",$Get(iAccount))
 Do ##class(Riches.Transact).OutputFormField("TranDate","Date",$Get(iTranDate,$Piece($Horolog,",",1)))
 Do ##class(Riches.Transact).OutputFormField("TranTime","Time",$Get(iTranTime,$Piece($Horolog,",",2)))
+Do ##class(Riches.Transact).OutputFormField("CheckNumber","Check",$Get(iCheckNumber))
 Do ##class(Riches.Transact).OutputFormField("Merchant","Merchant",$Get(iMerchant))
 Do ##class(Riches.Transact).OutputFormField("AmountDebit","Amount Debit",$Get(iAmountDebit))
 Do ##class(Riches.Transact).OutputFormField("AmountCredit","Amount Credit",$Get(iAmountCredit))
@@ -93,7 +96,7 @@ Do ##class(Riches.Transact).OutputFormField("Category","Category",$Get(iCategory
 <tr><td>
 <iframe id="iframe_chooser" name="iframe_chooser" src="chooser.csp" title="Chooser" width="600" height="400" style="border:1px solid black;"></iframe>
 </td><td>
-<iframe id="iframe_ledger" name="iframe_ledger" src="chooser.csp" title="Ledger" width="600" height="400" style="border:1px solid black;"></iframe>
+<iframe id="iframe_ledger" name="iframe_ledger" src="ledger.csp" title="Ledger" width="600" height="400" style="border:1px solid black;"></iframe>
 </td></tr>
 </table>
 </body>
