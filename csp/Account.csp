@@ -2,6 +2,9 @@
 <head>
 <script language="Cache" runat="Server">
 Set tHeader = "Riches - Account"
+Merge pRequestData = %request.Data
+Set tSC = ##class(Riches.RequestData).LogRequest(.pRequestData,"Account.csp")
+
 If ($Data(%request.Data("iType",1))) {
 	Set iType = %request.Data("iType",1)
 }
@@ -25,46 +28,68 @@ If ($Get(iNickname) '= "") {
 	}
 }
 </script>
+<script language="JavaScript">
+function onloadHandler()
+{
+	var tAction = '#($Get(tAction,""))#';
+	var tLogicalDisplay = '#($Get(pLogicalDisplay,""))#';
+	if (tAction != '') {
+		updateLogicalDisplay(tLogicalDisplay);
+	}
+}
+function tableClickHandler(id)
+{
+	updateLogicalDisplay(id);
+}
+function fileOnChange(id)
+{
+	var fileUploader = document.getElementById('file-uploader');
+	//alert(fileUploader.files);
+	// Loop through the files and get metadata
+  		var file = fileUploader.files[0]; 
+    	var name = file.name;
+    	var type = file.type ? file.type: 'NA';
+    	var size = file.size;
+    	var lastModified = file.lastModified;
+	    alert( file + name + type + size + lastModified );
+}
+function showFile(input)
+{
+	var file = input.files[0];
+	var reader = new FileReader();
+	reader.onload = function() {
+		document.getElementById('debug').value = reader.result;
+  	};
+	reader.onerror = function() {
+		document.getElementById('debug').value = reader.error;
+		alert(reader.error);
+	}
+	reader.readAsText(file);
+}
+</script>
+
 <title>#(tHeader)#</title>
 </head>
 
 <body>
 <h1>#(tHeader)#</h1>
-<form>
+<form action="" method="post" enctype="multipart/form-data">
+<script language="Cache" runat="Server">
+Set tSC = ##class(Riches.Account).OutputFormData()
+</script>
+<label for="file-uploader">CSV file:</label>
+<input type="file" name="file-uploader" id="file-uploader" onchange="showFile(this)"><br>
 
-<table><tr><td>
-<input type="radio" id="TypeChecking" name="iType" value="TypeChecking">
-<label for="TypeChecking">Checking</label><br>
-</td><td>
-<input type="radio" id="TypeSavings" name="iType" value="TypeSavings">
-<label for="TypeSavings">Savings</label><br>
-</td><td>
-<input type="radio" id="TypeCreditCard" name="iType" value="TypeCreditCard">
-<label for="TypeCreditCard">Credit Card</label><br>
-</td></tr></table>
-
-<table><tr><td>
-<label for="iNickname">Nickname:</label>
-</td><td>
-<input type="text" id="iNickname" name="iNickname" size="50" value="#($Get(iNickname))#"><br>
-</td></tr>
-
-<tr><td>
-<label for="iStartBalance">Start Balance:</label>
-</td><td>
-<input type="text" id="iStartBalance" name="iStartBalance" size="50" value="#($Get(iStartBalance))#"><br>
-</td></tr></table>
-
-<input type="submit" value="Submit">
 </form>
 
 <script language="Cache" runat="Server">
 Write "<table>",!
 Do ##class(Riches.Account).OutputTableData()
 Write "</table>",!
-Write "<textarea id='debug' name='debug' rows='5' cols='50'>",!
+Write "<textarea id='debug' name='debug' rows='15' cols='150'>",!
 Set tDebug = ""
 Set tRow = ""
+/*
 For {
 	If ($Data(^TESTunit) = 0) { Quit }
 	Set tDebug = $Order(^TESTunit(tDebug))
@@ -72,6 +97,7 @@ For {
 	Write $Get(^TESTunit(tDebug)),!
 	If ($Increment(tRow) > 4) { Quit }
 }
+*/
 Write "</textarea>","<br>",!
 Write "<a href='/csp/sys/exp/UtilExpGlobalView.csp?$ID2=TESTunit&$NAMESPACE=",$Namespace,"'>View Debug Global"
 </script>
