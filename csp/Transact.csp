@@ -26,6 +26,10 @@ If $$$ISERR(tSC) {
 }
 </script>
 <script language="JavaScript">
+function clearForm()
+{
+	//alert('clear form');
+}
 function onloadHandler()
 {
 	var iAccount = document.getElementById("iAccount").value;
@@ -66,10 +70,11 @@ Write "</td></tr></table>",!
 */
 </script>
 
+<table border=1>
+<tr><td>
 <form>
 <table border=1>
-<tr><th>Form</th><th>Logical</th><th>Display</th></tr>
-
+<tr><td>Form</td><td>Hide</td><td>Display</td></tr>
 <script language="Cache" runat="Server">
 Do ##class(Riches.Transact).OutputFormField("Account","Account",$Get(iAccount))
 Do ##class(Riches.Transact).OutputFormField("TranDate","Date",$Get(iTranDate,$Piece($Horolog,",",1)))
@@ -79,25 +84,20 @@ Do ##class(Riches.Transact).OutputFormField("Merchant","Merchant",$Get(iMerchant
 Do ##class(Riches.Transact).OutputFormField("AmountDebit","Amount Debit",$Get(iAmountDebit))
 Do ##class(Riches.Transact).OutputFormField("AmountCredit","Amount Credit",$Get(iAmountCredit))
 Do ##class(Riches.Transact).OutputFormField("Category","Category",$Get(iCategory))
+Do ##class(Riches.Transact).OutputFormField("SubCategory","SubCategory",$Get(iSubCategory))
+Do ##class(Riches.Transact).OutputFormField("Memo","Memo",$Get(iMemo))
 </script>
-
-<tr><td>
-<label for="iSubCategory">Sub Category:</label>
-</td><td>
-<input type="text" id="iSubCategory" name="iSubCategory" size="50" value="#($Get(iSubCategory))#"><br>
-</td></tr>
 <tr><th colspan="3">#(##class(Riches.Util).GetStatusText(tSC))#</th></tr>
 </table>
-
 <input type="submit" value="Submit">
 </form>
-
-<table>
-<th>Chooser</th><th>Ledger</th>
-<tr><td>
-<iframe id="iframe_chooser" name="iframe_chooser" src="chooser.csp" title="Chooser" width="600" height="400" style="border:1px solid black;"></iframe>
 </td><td>
-<iframe id="iframe_ledger" name="iframe_ledger" src="ledger.csp" title="Ledger" width="600" height="400" style="border:1px solid black;"></iframe>
+<iframe id="iframe_account" name="iframe_split" src="" title="Split" width="550" height="500" style=""></iframe>
+</td></tr>
+<tr><td>
+<iframe id="iframe_chooser" name="iframe_chooser" src="chooser.csp" title="Chooser" width="750" height="300" style=""></iframe>
+</td><td>
+<iframe id="iframe_ledger" name="iframe_ledger" src="ledger.csp" title="Ledger" width="550" height="300" style=""></iframe>
 </td></tr>
 </table>
 </body>
