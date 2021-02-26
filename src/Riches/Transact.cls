@@ -19,6 +19,8 @@ Property TranTime As %Time;
 
 Property CheckNumber As %Integer;
 
+Property Memo As %String;
+
 Property OtherSide As Transact;
 
 ClassMethod OutputFormField(pField As %String = "Account", pCaption As %String = "", pValue As %String = "") As %Status
@@ -27,22 +29,29 @@ ClassMethod OutputFormField(pField As %String = "Account", pCaption As %String =
 	Set qHref = q_"Chooser.csp?iChoose="_pField_q
 	Set qID = q_"i"_pField_q
 	Set qIDD = q_"d"_pField_q
-	Set qSize = q_"50"_q
+	Set qSize = q_"25"_q
 	Set qTarget = q_"iframe_chooser"_q
 	Set qText = q_"text"_q
+	Set qHide = q_"hidden"_q
 	Set qValue = q_pValue_q
 	If (pField = "Account") Set tQuery = "SELECT Nickname FROM Riches.Account WHERE ID = "_pValue
 	If (pField = "Category") Set tQuery = "SELECT Nickname FROM Riches.Category WHERE ID = "_pValue
 	If (pField = "Merchant") Set tQuery = "SELECT Nickname FROM Riches.Merchant WHERE ID = "_pValue
 	If ($Get(tQuery) '= "") Set tSC = ##class(Util).ExecuteQueryOneValue(tQuery,.tDisplay)
-	If (pField [ "Amount") Set tDisplay = pValue
 	If (pField [ "Date") Set tDisplay = $ZDATE(pValue)
 	If (pField [ "Time") Set tDisplay = $ZTIME(pValue)
-	Set qDisplay = q_$Get(tDisplay)_q
+	Set qDisplay = q_$Get(tDisplay,pValue)_q
 	Write "<tr><td><label for=",qID,">",pCaption,":</label></td>",!
-	Write "<td><input type=",qText," id=",qID," name=",qID," size=",qSize," value=",qValue,"></td>",!
-	Write "<td><input type=",qText," id=",qIDD," size=",qSize," value=",qDisplay,"></td>",!
-	Write "<td><p><a href=",qHref," target=",qTarget,">Choose</a></p></td></tr>",!
+	Write "<td>",!
+	If $Data(tDisplay) {
+		Write "<input type=",qText," id=",qIDD," size=",qSize," value=",qDisplay,$Get(onChange),">",!
+		Write "<input type=",qHide," id=",qID," name=",qID," size=",qSize," value=",qValue,">",!
+	} Else {
+		Write "<input type=",qText," id=",qID," name=",qID," size=",qSize," value=",qValue,">",!
+	}
+	Write "</td>",!
+	Write "<td><a href=",qHref," target=",qTarget,">Choose</a></td>",!
+	Write "</tr>",!
 	Quit $$$OK
 }
 
@@ -129,11 +138,14 @@ ClassMethod SubmitFormData(ByRef pRequestData, Output pAction, Output pId) As %S
 	If ($Data(pRequestData("iCheckNumber",1))) {
 		Set iCheckNumber = pRequestData("iCheckNumber",1)
 	}
+	If ($Data(pRequestData("iMemo",1))) {
+		Set iMemo = pRequestData("iMemo",1)
+	}
 	Do ##class(Util).DebugStatus(tSC)
 	If $$$ISERR(tSC) Quit tSC
 	TSTART
-	&SQL(INSERT INTO Riches.Transact (Account,AmountCredit,AmountDebit,Category,Merchant,TranDate,TranTime,CheckNumber)
-		VALUES (:iAccount,:iAmountCredit,:iAmountDebit,:iCategory,:iMerchant,:iTranDate,:iTranTime,:iCheckNumber))
+	&SQL(INSERT INTO Riches.Transact (Account,AmountCredit,AmountDebit,Category,Merchant,TranDate,TranTime,CheckNumber,Memo)
+		VALUES (:iAccount,:iAmountCredit,:iAmountDebit,:iCategory,:iMerchant,:iTranDate,:iTranTime,:iCheckNumber,:iMemo))
 	Do ##class(Util).DebugTEST("SQLCODE = "_SQLCODE)
 	If SQLCODE TROLLBACK  Quit $$$ERROR($$$GeneralError,"Cannot INSERT Transact - SQLCODE = "_SQLCODE)
 	&SQL(UPDATE Riches.Account SET CurrBalance = CurrBalance - :iAmountDebit + :iAmountCredit WHERE ID = :iAccount)
@@ -177,6 +189,9 @@ Storage Default
 </Value>
 <Value name="11">
 <Value>OtherSide</Value>
+</Value>
+<Value name="12">
+<Value>Memo</Value>
 </Value>
 </Data>
 <DataLocation>^Riches.TransactD</DataLocation>
