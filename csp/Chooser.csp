@@ -31,7 +31,7 @@ Do ##class(Riches.Util).DebugTEST("<head> tAction = "_tAction)
 function onloadHandler()
 {
 	var tAction = '#($Get(tAction,""))#';
-	var tLogicalDisplay = '#($Get(pLogicalDisplay,""))#';
+	var tLogicalDisplay = #(##class(%CSP.Page).QuoteJS($Get(pLogicalDisplay,"")))#;
 	if (tAction != '') {
 		updateLogicalDisplay(tLogicalDisplay);
 	}
@@ -75,7 +75,7 @@ If (tChoose = "CATEGORY") { Set tClassname = "Riches.Category" }
 If (tChoose = "MERCHANT") {	Set tClassname = "Riches.Merchant" }
 If ($Get(tClassname) '= "") {
 	Set pWhere = ""
-	Set pTrClick = "javascript:tableClickHandler('#');"
+	Set pTrClick = "javascript:tableClickHandler(#);"
 	Set pMaxRows = -1
 	Set tSC = $CLASSMETHOD(tClassname,"OutputTableData",pWhere,pTrClick,pMaxRows)
 }
