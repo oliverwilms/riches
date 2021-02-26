@@ -1,0 +1,87 @@
+<html>
+<head>
+<script language="Cache" runat="Server">
+Set tHeader = "Riches - Home"
+Merge pRequestData = %request.Data
+Set tSC = ##class(Riches.RequestData).LogRequest(.pRequestData,"Transact.csp")
+If $$$ISOK(tSC) Set tSC = ##class(Riches.Transact).SubmitFormData(.pRequestData,.pAction,.pId)
+/* Extract iAccount from %request.Data */
+If ($Data(%request.Data("iAccount",1))) {
+	Set iAccount = %request.Data("iAccount",1)
+}
+/* Retrieve other data only when Submit failed */
+If $$$ISERR(tSC) {
+	If ($Data(%request.Data("iAmountCredit",1))) {
+		Set iAmountCredit = %request.Data("iAmountCredit",1)
+	}
+	If ($Data(%request.Data("iAmountDebit",1))) {
+		Set iAmountDebit = %request.Data("iAmountDebit",1)
+	}
+	If ($Data(%request.Data("iCategory",1))) {
+		Set iCategory = %request.Data("iCategory",1)
+	}
+	If ($Data(%request.Data("iMerchant",1))) {
+		Set iMerchant = %request.Data("iMerchant",1)
+	}
+}
+</script>
+<script language="JavaScript">
+function clearForm()
+{
+	//alert('clear form');
+}
+function onloadHandler()
+{
+	//var iAccount = document.getElementById("iAccount").value;
+	//document.getElementById("iframe_ledger").src = 'Ledger.csp?iAccount='+iAccount;
+}
+</script>
+<title>#(tHeader)#</title>
+</head>
+
+<body onload="onloadHandler();">
+<h1>#(tHeader)#</h1>
+
+<script language="Cache" runat="Server">
+/*
+Write "<table>",!
+//Do ##class(Riches.Account).OutputTableData()
+Write "</table>",!
+Write "<textarea id='debug' name='debug' rows='5' cols='50'>",!
+Set tDebug = ""
+Set tRow = ""
+For {
+	If ($Data(^TESTunit) = 0) { Quit }
+	Set tDebug = $Order(^TESTunit(tDebug))
+	If (tDebug = "") { Quit }
+	Write $Get(^TESTunit(tDebug)),!
+	If ($Increment(tRow) > 4) { Quit }
+}
+Write "</textarea>","<br>",!
+Write "<a href='/csp/sys/exp/UtilExpGlobalView.csp?$ID2=TESTunit&$NAMESPACE=",$Namespace,"'>View Debug Global</a>"
+Write "Hidden",!
+Write "<table border=1><tr><td>",!
+If ($Data(%request.Data("iAccount",1))) {
+	Set iAccount = %request.Data("iAccount",1)
+	Set objAccount = ##class(Riches.Account).%OpenId(iAccount)
+}
+If $Data(objAccount),$IsObject(objAccount) { Write objAccount.Nickname }
+Write "</td></tr></table>",!
+*/
+</script>
+
+<table>
+<th>Chooser</th><th>Ledger</th>
+<tr><td>
+<iframe id="iframe_chooser" name="iframe_chooser" src="account.csp" title="Chooser" width="650" height="500" style="border:1px solid black;"></iframe>
+</td><td>
+<iframe id="iframe_transact" name="iframe_ledger" src="transact.csp" title="Ledger" width="650" height="500" style="border:1px solid black;"></iframe>
+</td></tr>
+<tr><td>
+<iframe id="iframe_chooser" name="iframe_chooser" src="chooser.csp" title="Chooser" width="650" height="300" style="border:1px solid black;"></iframe>
+</td><td>
+<iframe id="iframe_ledger" name="iframe_ledger" src="ledger.csp" title="Ledger" width="650" height="300" style="border:1px solid black;"></iframe>
+</td></tr>
+</table>
+</body>
+</html>
