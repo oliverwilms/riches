@@ -28,7 +28,8 @@ If $$$ISERR(tSC) {
 <script language="JavaScript">
 function clearForm()
 {
-	//alert('clear form');
+	document.getElementById("iAmountCredit").value = '';
+	document.getElementById("iAmountDebit").value = '';
 }
 function onloadHandler()
 {
@@ -74,7 +75,7 @@ Write "</td></tr></table>",!
 <tr><td>
 <form>
 <table border=1>
-<tr><td>Form</td><td>Hide</td><td>Display</td></tr>
+<tr><th>Form</th><th>Display</th><td><button type="button" onclick="clearForm()">Clear</button></td></tr>
 <script language="Cache" runat="Server">
 Do ##class(Riches.Transact).OutputFormField("Account","Account",$Get(iAccount))
 Do ##class(Riches.Transact).OutputFormField("TranDate","Date",$Get(iTranDate,$Piece($Horolog,",",1)))
