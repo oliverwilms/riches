@@ -1,10 +1,10 @@
 <html>
 <head>
 <script language="Cache" runat="Server">
-Set tHeader = "Riches - Home"
+Set tHeader = "Riches - Split"
 Merge pRequestData = %request.Data
-Set tSC = ##class(Riches.RequestData).LogRequest(.pRequestData,"Transact.csp")
-If $$$ISOK(tSC) Set tSC = ##class(Riches.Transact).SubmitFormData(.pRequestData,.pAction,.pId)
+Set tSC = ##class(Riches.RequestData).LogRequest(.pRequestData,"Riches.csp")
+//If $$$ISOK(tSC) Set tSC = ##class(Riches.Transact).SubmitFormData(.pRequestData,.pAction,.pId)
 /* Extract iAccount from %request.Data */
 If ($Data(%request.Data("iAccount",1))) {
 	Set iAccount = %request.Data("iAccount",1)
@@ -71,16 +71,34 @@ Write "</td></tr></table>",!
 </script>
 
 <table>
-<th>Chooser</th><th>Ledger</th>
 <tr><td>
-<iframe id="iframe_chooser" name="iframe_chooser" src="account.csp" title="Chooser" width="650" height="500" style="border:1px solid black;"></iframe>
-</td><td>
-<iframe id="iframe_transact" name="iframe_ledger" src="transact.csp" title="Ledger" width="650" height="500" style="border:1px solid black;"></iframe>
+
+<!-- Transact Form -->
+<form>
+<table border=1>
+<tr><th>Form</th><th>Display</th><td><button type="button" onclick="goSplit()">Split</button></td></tr>
+<script language="Cache" runat="Server">
+Do ##class(Riches.Transact).OutputFormField("Account","Account",$Get(iAccount))
+Do ##class(Riches.Transact).OutputFormField("TranDate","Date",$Get(iTranDate,$Piece($Horolog,",",1)))
+Do ##class(Riches.Transact).OutputFormField("TranTime","Time",$Get(iTranTime,$Piece($Horolog,",",2)))
+Do ##class(Riches.Transact).OutputFormField("CheckNumber","Check",$Get(iCheckNumber))
+Do ##class(Riches.Transact).OutputFormField("Merchant","Merchant",$Get(iMerchant))
+Do ##class(Riches.Transact).OutputFormField("AmountDebit","Amount Debit",$Get(iAmountDebit))
+Do ##class(Riches.Transact).OutputFormField("AmountCredit","Amount Credit",$Get(iAmountCredit))
+Do ##class(Riches.Transact).OutputFormField("Category","Category",$Get(iCategory))
+Do ##class(Riches.Transact).OutputFormField("SubCategory","SubCategory",$Get(iSubCategory))
+Do ##class(Riches.Transact).OutputFormField("Memo","Memo",$Get(iMemo))
+</script>
+<tr><th colspan="3">#(##class(Riches.Util).GetStatusText(tSC))#</th></tr>
+</table>
+<input type="submit" value="Submit">
+<button type="button" onclick="clearForm()">Clear</button>
+</form>
 </td></tr>
+
+
 <tr><td>
-<iframe id="iframe_chooser" name="iframe_chooser" src="chooser.csp" title="Chooser" width="650" height="300" style="border:1px solid black;"></iframe>
 </td><td>
-<iframe id="iframe_ledger" name="iframe_ledger" src="ledger.csp" title="Ledger" width="650" height="300" style="border:1px solid black;"></iframe>
 </td></tr>
 </table>
 </body>
