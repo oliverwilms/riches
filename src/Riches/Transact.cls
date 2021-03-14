@@ -21,6 +21,9 @@ Property CheckNumber As %Integer;
 
 Property Memo As %String;
 
+/// If I make March payment in February
+Property BudgetDate As %Date;
+
 Property OtherSide As Transact;
 
 ClassMethod OutputFormField(pField As %String = "Account", pCaption As %String = "", pValue As %String = "") As %Status
