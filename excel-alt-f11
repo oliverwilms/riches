@@ -10,6 +10,7 @@ Sub exportRangeToCSVFile()
     Dim flag As Boolean
     Dim i, j As Integer
     Dim val As String
+    Dim lngNum As Long
     
     Application.DisplayAlerts = False
     Application.DisplayAlerts = True
@@ -32,12 +33,19 @@ Sub exportRangeToCSVFile()
                     On Error Resume Next
                     val = rngToSave(i, j).Value
                     If (err.Number > 0) Then
-                        val = i & "ERROR" & j
+                        lngNum = CLng(rngToSave(i, j).Value)
+                        val = j & "ERROR" & lngNum
+                        csvVal = csvVal & Chr(34) & val & Chr(34) & ","
+                    Else
+                        csvVal = csvVal & Chr(34) & val & Chr(34) & ","
+                    End If
+                    If (err.Number > 0) Then
+                        'val = i & "ERROR" & j
                     End If
                     If (Len(val) > 1) Then
                         flag = True
                     End If
-                    csvVal = csvVal & Chr(34) & val & Chr(34) & ","
+                    'csvVal = csvVal & Chr(34) & val & Chr(34) & ","
                 Next
                 If (flag = True) Then
                     Print #fileNumber, Left(csvVal, Len(csvVal) - 1)
