@@ -2,38 +2,63 @@ Option Explicit
 Sub exportRangeToCSVFile()
     Dim myCSVFileName As String
     Dim myWB As Workbook
-    Dim tempWB As Workbook
     Dim sh As Worksheet
     Dim rngToSave As Range
     Dim fileNumber As Integer
     Dim shNumber As Integer
     Dim csvVal As String
+    Dim flag As Boolean
     Dim i, j As Integer
+    Dim val As String
     
     Application.DisplayAlerts = False
-    On Error GoTo err
+    Application.DisplayAlerts = True
+    'On Error GoTo err
 
     Set myWB = ThisWorkbook
     myCSVFileName = "C:\opt\irisapp\iris-for-money-" & VBA.Format(VBA.Now, "dd-MMM-yyyy hh-mm") & ".csv"
     csvVal = ""
+    flag = False
     fileNumber = FreeFile
     shNumber = 0
     Open myCSVFileName For Output As #fileNumber
     
     For Each sh In Sheets
         shNumber = shNumber + 1
-        If (shNumber > 0) Then
-            Set rngToSave = sh.Range("A2:M64")
-            For i = 1 To rngToSave.Rows.Count
-                For j = 1 To rngToSave.Columns.Count
-                    csvVal = csvVal & Chr(34) & rngToSave(i, j).Value & Chr(34) & ","
+        If (shNumber > 5) Then
+            Set rngToSave = sh.Range("A2:M32767")
+            For i = 1 To 32766
+                For j = 1 To 13
+                    On Error Resume Next
+                    val = rngToSave(i, j).Value
+                    If (err.Number > 0) Then
+                        val = i & "ERROR" & j
+                    End If
+                    If (Len(val) > 1) Then
+                        flag = True
+                    End If
+                    csvVal = csvVal & Chr(34) & val & Chr(34) & ","
                 Next
-                Print #fileNumber, Left(csvVal, Len(csvVal) - 2)
+                If (flag = True) Then
+                    Print #fileNumber, Left(csvVal, Len(csvVal) - 1)
+                End If
                 csvVal = ""
+                flag = False
             Next
         End If
     Next sh
     Close #fileNumber
 err:
+    Close #fileNumber
     Application.DisplayAlerts = True
 End Sub
+
+Function getValue(ByRef rng As Range, ByVal lin As Integer, ByVal colum As Integer)
+    On Error GoTo errHandler
+    Dim strVal As String
+    strVal = rng(lin, colum).Value
+    getValue = strVal
+errHandler:
+    'MsgBox rng(lin, colum).Value
+    getValue = lin & "ERROR" & colum
+End Function
