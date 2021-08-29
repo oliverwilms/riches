@@ -27,7 +27,11 @@ Sub exportRangeToCSVFile()
     For Each sh In Sheets
         shNumber = shNumber + 1
         If (shNumber > 5) Then
-            Set rngToSave = sh.Range("A2:M32767")
+            If (shNumber = 6) Then
+                Set rngToSave = sh.Range("A1:M32766")
+            Else
+                Set rngToSave = sh.Range("A2:M32767")
+            End If
             For i = 1 To 32766
                 For j = 1 To 13
                     On Error Resume Next
