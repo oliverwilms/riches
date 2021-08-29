@@ -1,0 +1,39 @@
+Option Explicit
+Sub exportRangeToCSVFile()
+    Dim myCSVFileName As String
+    Dim myWB As Workbook
+    Dim tempWB As Workbook
+    Dim sh As Worksheet
+    Dim rngToSave As Range
+    Dim fileNumber As Integer
+    Dim shNumber As Integer
+    Dim csvVal As String
+    Dim i, j As Integer
+    
+    Application.DisplayAlerts = False
+    On Error GoTo err
+
+    Set myWB = ThisWorkbook
+    myCSVFileName = "C:\opt\irisapp\iris-for-money-" & VBA.Format(VBA.Now, "dd-MMM-yyyy hh-mm") & ".csv"
+    csvVal = ""
+    fileNumber = FreeFile
+    shNumber = 0
+    Open myCSVFileName For Output As #fileNumber
+    
+    For Each sh In Sheets
+        shNumber = shNumber + 1
+        If (shNumber > 0) Then
+            Set rngToSave = sh.Range("A2:M64")
+            For i = 1 To rngToSave.Rows.Count
+                For j = 1 To rngToSave.Columns.Count
+                    csvVal = csvVal & Chr(34) & rngToSave(i, j).Value & Chr(34) & ","
+                Next
+                Print #fileNumber, Left(csvVal, Len(csvVal) - 2)
+                csvVal = ""
+            Next
+        End If
+    Next sh
+    Close #fileNumber
+err:
+    Application.DisplayAlerts = True
+End Sub
