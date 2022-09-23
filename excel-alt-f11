@@ -33,10 +33,11 @@ Sub exportRangeToCSVFile()
                 Set rngToSave = sh.Range("A2:M32767")
             End If
             For i = 1 To 32766
-                rngToSave(i, 1).NumberFormat = "yyyy-mm-dd"
                 For j = 1 To 13
                     On Error Resume Next
-                    'rngToSave(i, j).NumberFormat = "yyyy-mm-dd"
+                    If (j = 1) Then
+                        rngToSave(i, j).NumberFormat = "yyyy-mm-dd"
+                    End If
                     val = rngToSave(i, j).Value
                     If (err.Number > 0) Then
                         lngNum = CLng(rngToSave(i, j).Value)
